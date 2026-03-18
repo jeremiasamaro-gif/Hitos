@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "obras-dev",
+      "runtimeExecutable": "/Users/jeremiasamaro/.local/node/bin/node",
+      "runtimeArgs": ["/Users/jeremiasamaro/.local/node/bin/npm", "run", "dev"],
+      "env": { "PATH": "/Users/jeremiasamaro/.local/node/bin:/usr/bin:/bin" },
+      "port": 5174
+    }
+  ]
+}
