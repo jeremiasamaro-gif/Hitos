@@ -6,6 +6,7 @@ import { CurrencySelector } from '@/components/ui/CurrencySelector'
 import { Badge } from '@/components/ui/Badge'
 import { UserMenu } from '@/components/ui/UserMenu'
 import { ProjectTabs } from './ProjectTabs'
+import { NuevaActualizacionDropdown } from '@/components/project/NuevaActualizacionDropdown'
 
 export function ProjectLayout() {
   const { project, userRole, globalProgress } = useProjectContext()
@@ -61,8 +62,17 @@ export function ProjectLayout() {
           <CurrencySelector />
         </div>
 
-        {/* Tabs */}
-        <ProjectTabs role={userRole} />
+        {/* Tabs + CTA */}
+        <div className="flex items-center">
+          <div className="flex-1 overflow-x-auto">
+            <ProjectTabs role={userRole} />
+          </div>
+          {userRole === 'arquitecto' && (
+            <div className="shrink-0 pr-4">
+              <NuevaActualizacionDropdown />
+            </div>
+          )}
+        </div>
       </header>
 
       {/* Content */}

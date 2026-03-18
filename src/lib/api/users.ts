@@ -2,7 +2,7 @@ import { supabase, type User } from '../supabase'
 
 export async function updateUser(
   id: string,
-  updates: Partial<Pick<User, 'name'>>
+  updates: Partial<Pick<User, 'name' | 'firma_url' | 'firma_en_pdf' | 'logo_url'>>
 ): Promise<User> {
   const { data, error } = await supabase
     .from('users')

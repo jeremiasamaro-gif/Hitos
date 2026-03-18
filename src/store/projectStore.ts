@@ -11,6 +11,7 @@ interface CreateProjectData {
   start_date?: string
   end_date_estimated?: string
   weeks_estimated?: number
+  metros_cuadrados?: number
 }
 
 interface ProjectState {
@@ -20,7 +21,7 @@ interface ProjectState {
   fetchProjects: () => Promise<void>
   fetchProject: (id: string) => Promise<void>
   createProject: (data: CreateProjectData) => Promise<Project>
-  updateProject: (id: string, data: Partial<Pick<Project, 'name' | 'address' | 'usd_rate_blue'>>) => Promise<void>
+  updateProject: (id: string, data: Partial<Pick<Project, 'name' | 'address' | 'usd_rate_blue' | 'honorario_direccion' | 'honorario_proyecto' | 'metros_cuadrados'>>) => Promise<void>
 }
 
 export const useProjectStore = create<ProjectState>((set) => ({
@@ -54,6 +55,9 @@ export const useProjectStore = create<ProjectState>((set) => ({
       start_date: data.start_date ?? null,
       end_date_estimated: data.end_date_estimated ?? null,
       weeks_estimated: data.weeks_estimated ?? null,
+      honorario_direccion: 0,
+      honorario_proyecto: 0,
+      metros_cuadrados: data.metros_cuadrados ?? 0,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     }

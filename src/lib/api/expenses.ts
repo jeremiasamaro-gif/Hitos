@@ -24,7 +24,7 @@ export async function getExpenses(
 
 export async function createExpense(
   expense: Pick<Expense, 'project_id' | 'date' | 'amount_ars' | 'created_by'> &
-    Partial<Pick<Expense, 'budget_item_id' | 'provider' | 'detail' | 'amount_usd' | 'exchange_rate' | 'payment_method' | 'week_number'>>
+    Partial<Pick<Expense, 'budget_item_id' | 'provider' | 'detail' | 'amount_usd' | 'exchange_rate' | 'payment_method' | 'week_number' | 'adjunto_url' | 'tipo_gasto'>>
 ): Promise<Expense> {
   const { data, error } = await supabase
     .from('expenses')
@@ -38,7 +38,7 @@ export async function createExpense(
 
 export async function updateExpense(
   id: string,
-  updates: Partial<Pick<Expense, 'budget_item_id' | 'date' | 'provider' | 'detail' | 'amount_ars' | 'amount_usd' | 'exchange_rate' | 'payment_method' | 'week_number'>>
+  updates: Partial<Pick<Expense, 'budget_item_id' | 'date' | 'provider' | 'detail' | 'amount_ars' | 'amount_usd' | 'exchange_rate' | 'payment_method' | 'week_number' | 'adjunto_url' | 'tipo_gasto'>>
 ): Promise<Expense> {
   const { data, error } = await supabase
     .from('expenses')

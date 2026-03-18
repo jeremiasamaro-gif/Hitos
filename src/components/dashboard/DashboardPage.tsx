@@ -5,6 +5,7 @@ import { ExpenseDistributionChart } from './ExpenseDistributionChart'
 import { MonthlySpendingChart } from './MonthlySpendingChart'
 import { AlertCards } from './AlertCards'
 import { ExportPDFButton } from '@/components/ui/ExportPDFButton'
+import { TimelineSection } from '@/components/project/TimelineSection'
 
 export function DashboardPage() {
   return (
@@ -15,6 +16,7 @@ export function DashboardPage() {
       </div>
       <KpiCards />
       <ProgressBar />
+      <TimelineSection />
       <div className="grid lg:grid-cols-2 gap-4 mt-6">
         <BudgetVsSpentChart />
         <MonthlySpendingChart />

@@ -14,9 +14,10 @@ interface Props {
   open: boolean
   onClose: () => void
   expense?: Expense | null
+  duplicateMode?: boolean
 }
 
-export function ExpenseFormModal({ open, onClose, expense }: Props) {
+export function ExpenseFormModal({ open, onClose, expense, duplicateMode }: Props) {
   const { id: projectId } = useParams<{ id: string }>()
   const user = useAuthStore((s) => s.user)
   const items = useBudgetStore((s) => s.items)
@@ -24,7 +25,7 @@ export function ExpenseFormModal({ open, onClose, expense }: Props) {
   const latestRate = useCurrencyStore((s) => s.latestRate)
 
   const parents = items.filter((i) => !i.parent_id)
-  const isEdit = !!expense
+  const isEdit = !!expense && !duplicateMode
 
   const [date, setDate] = useState(expense?.date || new Date().toISOString().split('T')[0])
   const [budgetItemId, setBudgetItemId] = useState(expense?.budget_item_id || '')
@@ -75,6 +76,8 @@ export function ExpenseFormModal({ open, onClose, expense }: Props) {
         exchange_rate: parseFloat(exchangeRate) || null,
         payment_method: paymentMethod,
         week_number: weekNumber ? parseInt(weekNumber) : null,
+        adjunto_url: expense?.adjunto_url ?? null,
+        tipo_gasto: expense?.tipo_gasto ?? 'materiales',
         created_by: user.id,
       }
 
@@ -102,7 +105,7 @@ export function ExpenseFormModal({ open, onClose, expense }: Props) {
   ]
 
   return (
-    <Modal open={open} onClose={onClose} title={isEdit ? 'Editar Gasto' : 'Nuevo Gasto'}>
+    <Modal open={open} onClose={onClose} title={duplicateMode ? 'Duplicar gasto' : isEdit ? 'Editar Gasto' : 'Nuevo Gasto'}>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div className="grid grid-cols-2 gap-3">
           <Input label="Fecha" type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
@@ -157,7 +160,7 @@ export function ExpenseFormModal({ open, onClose, expense }: Props) {
         </div>
 
         <Button type="submit" disabled={loading}>
-          {loading ? 'Guardando...' : isEdit ? 'Actualizar' : 'Registrar Gasto'}
+          {loading ? 'Guardando...' : duplicateMode ? 'Guardar copia' : isEdit ? 'Actualizar' : 'Registrar Gasto'}
         </Button>
       </form>
     </Modal>

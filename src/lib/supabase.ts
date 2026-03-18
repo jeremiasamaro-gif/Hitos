@@ -23,6 +23,9 @@ export interface User {
   role: UserRole
   honorario_direccion: number
   honorario_proyecto: number
+  firma_url: string | null
+  firma_en_pdf: boolean
+  logo_url: string | null
   created_at: string
   updated_at: string
 }
@@ -40,6 +43,9 @@ export interface Project {
   start_date: string | null
   end_date_estimated: string | null
   weeks_estimated: number | null
+  honorario_direccion: number
+  honorario_proyecto: number
+  metros_cuadrados: number
   created_at: string
   updated_at: string
 }
@@ -69,6 +75,8 @@ export interface BudgetItem {
   updated_at: string
 }
 
+export type TipoGasto = 'materiales' | 'mano_obra' | 'honorarios' | 'varios'
+
 export interface Expense {
   id: string
   project_id: string
@@ -81,6 +89,8 @@ export interface Expense {
   exchange_rate: number | null
   payment_method: string | null
   week_number: number | null
+  adjunto_url: string | null
+  tipo_gasto: TipoGasto
   created_by: string
   created_at: string
   updated_at: string

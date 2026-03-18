@@ -142,7 +142,7 @@ export async function createProject(
 
 export async function updateProject(
   id: string,
-  updates: Partial<Pick<Project, 'name' | 'address' | 'usd_rate_blue'>>
+  updates: Partial<Pick<Project, 'name' | 'address' | 'usd_rate_blue' | 'honorario_direccion' | 'honorario_proyecto' | 'metros_cuadrados'>>
 ): Promise<Project> {
   const { data, error } = await supabase
     .from('projects')

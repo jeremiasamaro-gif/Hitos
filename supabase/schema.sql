@@ -11,6 +11,9 @@ create table public.users (
   role text not null check (role in ('arquitecto', 'cliente')),
   honorario_direccion numeric(5,2) not null default 0,
   honorario_proyecto numeric(5,2) not null default 0,
+  firma_url text,
+  firma_en_pdf boolean default false,
+  logo_url text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -29,6 +32,9 @@ create table public.projects (
   start_date date,
   end_date_estimated date,
   weeks_estimated integer,
+  honorario_direccion numeric default 0,
+  honorario_proyecto numeric default 0,
+  metros_cuadrados numeric default 0,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -80,6 +86,9 @@ create table public.expenses (
   exchange_rate numeric(12,2),
   payment_method text,
   week_number int,
+  adjunto_url text,
+  tipo_gasto text default 'materiales'
+    check (tipo_gasto in ('materiales','mano_obra','honorarios','varios')),
   created_by uuid not null references public.users(id),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()

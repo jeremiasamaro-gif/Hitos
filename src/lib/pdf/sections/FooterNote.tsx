@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from '@react-pdf/renderer'
+import { View, Text, Image, StyleSheet } from '@react-pdf/renderer'
 import { formatDate, formatTime, PDF_COLORS } from '../pdfUtils'
 
 const styles = StyleSheet.create({
@@ -20,14 +20,22 @@ const styles = StyleSheet.create({
     fontSize: 9,
     color: PDF_COLORS.text,
   },
+  firma: {
+    width: 120,
+    height: 50,
+    objectFit: 'contain' as const,
+    marginTop: 8,
+  },
 })
 
 interface FooterNoteProps {
   architectName: string
   generatedAt: Date
+  firmaUrl?: string | null
+  firmaEnPdf?: boolean
 }
 
-export function FooterNote({ architectName, generatedAt }: FooterNoteProps) {
+export function FooterNote({ architectName, generatedAt, firmaUrl, firmaEnPdf }: FooterNoteProps) {
   return (
     <View style={styles.container}>
       <Text style={styles.disclaimer}>
@@ -36,6 +44,9 @@ export function FooterNote({ architectName, generatedAt }: FooterNoteProps) {
         generacion y pueden no representar el estado final de la obra.
       </Text>
       <Text style={styles.architect}>{architectName}</Text>
+      {firmaEnPdf && firmaUrl && (
+        <Image src={firmaUrl} style={styles.firma} />
+      )}
     </View>
   )
 }

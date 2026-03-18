@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useAuthStore } from '@/store/authStore'
 import { Card } from '@/components/ui/Card'
 import { mockProjects, mockExpenses, mockComments, mockBudgetItems, mockProjectMembers } from '@/store/mockData'
@@ -33,8 +33,13 @@ function ImportIcon() {
   )
 }
 
-export function ActividadRecienteSection() {
+interface ActividadRecienteSectionProps {
+  compact?: boolean
+}
+
+export function ActividadRecienteSection({ compact = false }: ActividadRecienteSectionProps) {
   const user = useAuthStore((s) => s.user)!
+  const [showAll, setShowAll] = useState(false)
 
   const activities = useMemo(() => {
     type Activity = { id: string; icon: 'expense' | 'comment' | 'import'; text: string; projectName: string; date: string }
@@ -79,15 +84,18 @@ export function ActividadRecienteSection() {
     import: <ImportIcon />,
   }
 
+  const visibleLimit = compact && !showAll ? 10 : activities.length
+  const visibleActivities = activities.slice(0, visibleLimit)
+
   return (
-    <Card className="p-6">
-      <h3 className="text-base font-heading font-semibold mb-4">Actividad reciente</h3>
-      <div className="space-y-3">
-        {activities.map((act) => (
-          <div key={act.id} className="flex items-start gap-3">
-            <div className="mt-0.5">{iconMap[act.icon]}</div>
+    <Card className={compact ? 'p-4' : 'p-6'}>
+      <h3 className={`${compact ? 'text-sm' : 'text-base'} font-heading font-semibold mb-${compact ? '3' : '4'}`}>Actividad reciente</h3>
+      <div className={compact ? 'space-y-1' : 'space-y-3'}>
+        {visibleActivities.map((act) => (
+          <div key={act.id} className={`flex items-start gap-2 ${compact ? 'py-1' : ''}`}>
+            <div className="mt-0.5 shrink-0">{iconMap[act.icon]}</div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm truncate">
+              <p className={`${compact ? 'text-[13px]' : 'text-sm'} truncate`}>
                 {act.text} <span className="text-secondary">· {act.projectName}</span>
               </p>
               <p className="text-xs text-secondary">
@@ -98,6 +106,14 @@ export function ActividadRecienteSection() {
         ))}
         {activities.length === 0 && (
           <p className="text-sm text-secondary">Sin actividad reciente</p>
+        )}
+        {compact && activities.length > 10 && !showAll && (
+          <button
+            onClick={() => setShowAll(true)}
+            className="text-xs text-accent hover:underline mt-2"
+          >
+            Ver más ({activities.length - 10} restantes)
+          </button>
         )}
       </div>
     </Card>

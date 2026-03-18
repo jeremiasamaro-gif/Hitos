@@ -33,6 +33,7 @@ export function CreateProjectModal({ open, onClose }: Props) {
   const [endDate, setEndDate] = useState('')
   const [weeksEstimated, setWeeksEstimated] = useState('')
   const [weeksManual, setWeeksManual] = useState(false)
+  const [metrosCuadrados, setMetrosCuadrados] = useState('')
   const [clientEmail, setClientEmail] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -59,6 +60,7 @@ export function CreateProjectModal({ open, onClose }: Props) {
     setEndDate('')
     setWeeksEstimated('')
     setWeeksManual(false)
+    setMetrosCuadrados('')
     setClientEmail('')
   }
 
@@ -76,6 +78,7 @@ export function CreateProjectModal({ open, onClose }: Props) {
         start_date: startDate || undefined,
         end_date_estimated: endDate || undefined,
         weeks_estimated: weeksEstimated ? parseInt(weeksEstimated) : undefined,
+        metros_cuadrados: metrosCuadrados ? parseFloat(metrosCuadrados) : undefined,
       })
 
       // Auto-invite client if email provided
@@ -144,6 +147,15 @@ export function CreateProjectModal({ open, onClose }: Props) {
           value={weeksEstimated}
           onChange={(e) => handleWeeksChange(e.target.value)}
           placeholder={startDate && endDate ? 'Calculado automaticamente' : '0'}
+        />
+
+        {/* Superficie */}
+        <Input
+          label="Superficie (m\u00b2)"
+          type="number"
+          value={metrosCuadrados}
+          onChange={(e) => setMetrosCuadrados(e.target.value)}
+          placeholder="Opcional"
         />
 
         {/* Exchange rate */}
