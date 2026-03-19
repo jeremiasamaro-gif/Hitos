@@ -35,6 +35,7 @@ create table public.projects (
   honorario_direccion numeric default 0,
   honorario_proyecto numeric default 0,
   metros_cuadrados numeric default 0,
+  avance_fisico numeric default 0,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );

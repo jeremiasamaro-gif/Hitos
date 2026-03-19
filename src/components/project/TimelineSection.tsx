@@ -129,7 +129,7 @@ export function TimelineSection() {
   const activeCategory = timeline.find((c) => c.isActive)
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4" style={{ marginTop: 20 }}>
       {/* Card 1 - Fecha estimada */}
       <Card className="p-4">
         <h3 className="text-xs text-secondary font-medium mb-2">Fecha estimada</h3>

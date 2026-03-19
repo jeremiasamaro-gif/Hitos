@@ -58,6 +58,7 @@ export const useProjectStore = create<ProjectState>((set) => ({
       honorario_direccion: 0,
       honorario_proyecto: 0,
       metros_cuadrados: data.metros_cuadrados ?? 0,
+      avance_fisico: 0,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     }

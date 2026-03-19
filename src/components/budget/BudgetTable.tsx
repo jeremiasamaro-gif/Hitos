@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
-import { Pencil, Trash2, Plus, Check, X, Bell } from 'lucide-react'
+import { Pencil, Trash2, Plus, Check, X, Bell, ChevronRight } from 'lucide-react'
 import type { BudgetItem } from '@/lib/supabase'
 import type { BudgetTreeNode } from '@/lib/budgetUtils'
 import { suggestNextCode } from '@/lib/budgetUtils'
@@ -41,6 +41,19 @@ export function BudgetTable({ tree, allItems, currencyMode, convert, onUpdate, o
   const [editRow, setEditRow] = useState<EditState | null>(null)
   const [inlineAdd, setInlineAdd] = useState<InlineAddState | null>(null)
   const [notifyItem, setNotifyItem] = useState<BudgetTreeNode | null>(null)
+  const [collapsed, setCollapsed] = useState<Record<string, boolean>>({})
+
+  const toggleCollapse = (id: string) => {
+    setCollapsed((prev) => ({ ...prev, [id]: !prev[id] }))
+  }
+
+  const collapseAll = () => {
+    const all: Record<string, boolean> = {}
+    tree.forEach((n) => { all[n.item.id] = true })
+    setCollapsed(all)
+  }
+
+  const expandAll = () => setCollapsed({})
 
   const startEdit = useCallback((node: BudgetTreeNode) => {
     setEditRow({
@@ -103,6 +116,13 @@ export function BudgetTable({ tree, allItems, currencyMode, convert, onUpdate, o
 
   return (
     <>
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-lg font-heading font-bold">Presupuesto de Obra</h2>
+        <div className="flex items-center gap-3">
+          <button onClick={collapseAll} className="text-xs text-secondary hover:text-accent transition-colors">Colapsar todo</button>
+          <button onClick={expandAll} className="text-xs text-secondary hover:text-accent transition-colors">Expandir todo</button>
+        </div>
+      </div>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
@@ -137,6 +157,8 @@ export function BudgetTable({ tree, allItems, currencyMode, convert, onUpdate, o
                 projectId={projectId}
                 allItems={allItems}
                 onNotify={setNotifyItem}
+                collapsed={collapsed}
+                toggleCollapse={toggleCollapse}
               />
             ))}
           </tbody>
@@ -182,13 +204,16 @@ interface GroupProps {
   projectId?: string
   allItems: BudgetItem[]
   onNotify?: (node: BudgetTreeNode) => void
+  collapsed: Record<string, boolean>
+  toggleCollapse: (id: string) => void
 }
 
-function CategoryGroup({ node, editRow, setEditRow, startEdit, cancelEdit, saveEdit, handleKeyDown, handleDelete, onAddChild, fmt, inlineAdd, setInlineAdd, onInlineAdd, projectId, allItems, onNotify }: GroupProps) {
+function CategoryGroup({ node, editRow, setEditRow, startEdit, cancelEdit, saveEdit, handleKeyDown, handleDelete, onAddChild, fmt, inlineAdd, setInlineAdd, onInlineAdd, projectId, allItems, onNotify, collapsed, toggleCollapse }: GroupProps) {
   const isEditing = editRow?.id === node.item.id
   const isCategory = node.level === 0
   const isSub = node.level === 1
   const showInlineAdd = inlineAdd?.parentId === node.item.id
+  const isCollapsed = isCategory && collapsed[node.item.id]
 
   // Row styles by level
   const rowBg = isCategory ? 'bg-[#F0EFFE]' : isSub ? 'bg-[#F7F6F1]' : 'bg-white'
@@ -207,8 +232,23 @@ function CategoryGroup({ node, editRow, setEditRow, startEdit, cancelEdit, saveE
   return (
     <>
       {/* Category/Subcategory row */}
-      <tr className={`border-b border-border/50 ${rowBg}`} style={borderStyle}>
-        <td className={`px-3 py-2 font-mono text-xs ${codeColor}`}>{node.item.item_code}</td>
+      <tr
+        className={`border-b border-border/50 ${rowBg} ${isCategory ? 'cursor-pointer' : ''}`}
+        style={borderStyle}
+        onClick={isCategory && node.children.length > 0 ? () => toggleCollapse(node.item.id) : undefined}
+      >
+        <td className={`px-3 py-2 font-mono text-xs ${codeColor}`}>
+          <span className="inline-flex items-center gap-1">
+            {isCategory && node.children.length > 0 && (
+              <ChevronRight
+                size={14}
+                className="shrink-0 transition-transform duration-200"
+                style={{ transform: isCollapsed ? 'rotate(0deg)' : 'rotate(90deg)' }}
+              />
+            )}
+            {node.item.item_code}
+          </span>
+        </td>
         <td className={`px-3 py-2 ${descClass}`} style={{ paddingLeft: `${12 + node.level * 16}px` }}>
           {isEditing ? (
             <input
@@ -299,8 +339,8 @@ function CategoryGroup({ node, editRow, setEditRow, startEdit, cancelEdit, saveE
         </td>
       </tr>
 
-      {/* Children */}
-      {node.children.map((child) => (
+      {/* Children (hidden when collapsed) */}
+      {!isCollapsed && node.children.map((child) => (
         <CategoryGroup
           key={child.item.id}
           node={child}
@@ -319,11 +359,13 @@ function CategoryGroup({ node, editRow, setEditRow, startEdit, cancelEdit, saveE
           projectId={projectId}
           allItems={allItems}
           onNotify={onNotify}
+          collapsed={collapsed}
+          toggleCollapse={toggleCollapse}
         />
       ))}
 
       {/* Inline add row */}
-      {showInlineAdd && onInlineAdd && projectId && (
+      {!isCollapsed && showInlineAdd && onInlineAdd && projectId && (
         <InlineAddRow
           state={inlineAdd!}
           setState={setInlineAdd}
@@ -337,7 +379,7 @@ function CategoryGroup({ node, editRow, setEditRow, startEdit, cancelEdit, saveE
       )}
 
       {/* Add child button at end of category/subcategory */}
-      {node.children.length > 0 && (
+      {!isCollapsed && node.children.length > 0 && (
         <tr className="border-b border-border/30">
           <td colSpan={8}>
             <button

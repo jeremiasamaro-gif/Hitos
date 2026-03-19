@@ -58,7 +58,7 @@ export function ProjectPresupuesto() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-heading font-bold">Presupuesto</h1>
+        <div /> {/* BudgetTable has its own title */}
         <div className="flex items-center gap-2">
           {viewMode === 'table' ? (
             <CargarDropdown onSelect={handleCargarSelect} />

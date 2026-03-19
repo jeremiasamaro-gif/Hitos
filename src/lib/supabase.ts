@@ -46,6 +46,7 @@ export interface Project {
   honorario_direccion: number
   honorario_proyecto: number
   metros_cuadrados: number
+  avance_fisico: number
   created_at: string
   updated_at: string
 }
