@@ -50,7 +50,12 @@ function TabLink({ to, label, icon, badge, external }: Tab) {
   )
 }
 
-export function ProjectTabs({ role }: { role: UserRole }) {
+interface ProjectTabsProps {
+  role: UserRole
+  cta?: React.ReactNode
+}
+
+export function ProjectTabs({ role, cta }: ProjectTabsProps) {
   const totalUnread = useCommentStore((s) => s.getTotalUnread())
 
   const architectTabs: Tab[] = [
@@ -58,7 +63,7 @@ export function ProjectTabs({ role }: { role: UserRole }) {
     { to: 'presupuesto', label: 'Presupuesto', icon: <ClipboardList size={16} /> },
     { to: 'pnl', label: 'PNL', icon: <Table2 size={16} /> },
     { to: 'gastos', label: 'Gastos', icon: <Receipt size={16} /> },
-    { to: 'analisis', label: 'Análisis', icon: <TrendingUp size={16} /> },
+    { to: 'analisis', label: 'Analisis', icon: <TrendingUp size={16} /> },
   ]
 
   const clientTabs: Tab[] = [
@@ -71,10 +76,15 @@ export function ProjectTabs({ role }: { role: UserRole }) {
   const tabs = role === 'arquitecto' ? architectTabs : clientTabs
 
   return (
-    <nav className="flex overflow-x-auto scrollbar-hide border-b border-border bg-card/30">
+    <nav className="flex items-center overflow-x-auto scrollbar-hide border-b border-border bg-card/30">
       {tabs.map((tab) => (
         <TabLink key={tab.to} {...tab} />
       ))}
+      {cta && (
+        <div className="shrink-0" style={{ marginLeft: 24 }}>
+          {cta}
+        </div>
+      )}
     </nav>
   )
 }

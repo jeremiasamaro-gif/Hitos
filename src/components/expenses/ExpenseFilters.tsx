@@ -1,12 +1,16 @@
 import { useBudgetStore } from '@/store/budgetStore'
 import { useExpenseStore } from '@/store/expenseStore'
 import { Select } from '@/components/ui/Select'
-import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
-import { X } from 'lucide-react'
+import { X, Search } from 'lucide-react'
 import { useParams } from 'react-router-dom'
 
-export function ExpenseFilters() {
+interface ExpenseFiltersProps {
+  searchQuery: string
+  onSearchChange: (value: string) => void
+}
+
+export function ExpenseFilters({ searchQuery, onSearchChange }: ExpenseFiltersProps) {
   const { id: projectId } = useParams<{ id: string }>()
   const items = useBudgetStore((s) => s.items)
   const { filters, setFilters, fetchExpenses } = useExpenseStore()
@@ -34,7 +38,7 @@ export function ExpenseFilters() {
     if (projectId) fetchExpenses(projectId)
   }
 
-  const hasFilters = filters.budgetItemId || filters.weekNumber || filters.provider
+  const hasFilters = filters.budgetItemId || filters.weekNumber || searchQuery
 
   return (
     <div className="flex flex-wrap gap-3 items-end">
@@ -52,19 +56,26 @@ export function ExpenseFilters() {
         onChange={(e) => handleChange('weekNumber', e.target.value)}
         className="w-36"
       />
-      <Input
-        label="Proveedor"
-        placeholder="Buscar..."
-        value={filters.provider || ''}
-        onChange={(e) => handleChange('provider', e.target.value)}
-        className="w-40"
-      />
+      <div className="flex-1 min-w-[200px]">
+        <label className="text-sm text-secondary block mb-1">Buscar</label>
+        <div className="relative">
+          <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-secondary" />
+          <input
+            type="text"
+            placeholder="Buscar en todos los campos..."
+            className="w-full bg-app border border-border rounded-lg pl-8 pr-3 py-2 text-sm"
+            value={searchQuery}
+            onChange={(e) => onSearchChange(e.target.value)}
+          />
+        </div>
+      </div>
       {hasFilters && (
         <Button
           variant="ghost"
           size="sm"
           onClick={() => {
             setFilters({})
+            onSearchChange('')
             if (projectId) fetchExpenses(projectId)
           }}
         >

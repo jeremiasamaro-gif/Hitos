@@ -62,17 +62,11 @@ export function ProjectLayout() {
           <CurrencySelector />
         </div>
 
-        {/* Tabs + CTA */}
-        <div className="flex items-center">
-          <div className="flex-1 overflow-x-auto">
-            <ProjectTabs role={userRole} />
-          </div>
-          {userRole === 'arquitecto' && (
-            <div className="shrink-0 pr-4">
-              <NuevaActualizacionDropdown />
-            </div>
-          )}
-        </div>
+        {/* Tabs + CTA inline */}
+        <ProjectTabs
+          role={userRole}
+          cta={userRole === 'arquitecto' ? <NuevaActualizacionDropdown /> : undefined}
+        />
       </header>
 
       {/* Content */}

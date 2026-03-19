@@ -31,10 +31,8 @@ export function ExpenseTable({ searchQuery = '' }: ExpenseTableProps) {
 
   const isArchitect = user?.role === 'arquitecto'
 
-  // Client-side filters
-  let filtered = filters.provider
-    ? expenses.filter((e) => e.provider?.toLowerCase().includes(filters.provider!.toLowerCase()))
-    : expenses
+  // Start with all expenses
+  let filtered = [...expenses]
 
   // Global search
   if (searchQuery.trim()) {
