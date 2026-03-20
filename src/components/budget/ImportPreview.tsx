@@ -47,7 +47,7 @@ export function ImportPreview({ rows, onConfirm, onCancel, importing, progress }
               <th className="px-2 py-1.5 text-left">Descripcion</th>
               <th className="px-2 py-1.5">Ud.</th>
               <th className="px-2 py-1.5 text-right">Cant.</th>
-              <th className="px-2 py-1.5">Gremio</th>
+              <th className="px-2 py-1.5">Rubro</th>
               <th className="px-2 py-1.5 text-right">P.Unit.</th>
               <th className="px-2 py-1.5 text-right">Total</th>
               <th className="px-2 py-1.5 text-center">Estado</th>
@@ -60,7 +60,7 @@ export function ImportPreview({ rows, onConfirm, onCancel, importing, progress }
                 <td className="px-2 py-1.5">{row.description || <span className="text-secondary italic">vacio</span>}</td>
                 <td className="px-2 py-1.5 text-center">{row.unit}</td>
                 <td className="px-2 py-1.5 text-right font-mono">{row.quantity}</td>
-                <td className="px-2 py-1.5">{row.gremio}</td>
+                <td className="px-2 py-1.5">{row.rubro}</td>
                 <td className="px-2 py-1.5 text-right font-mono">{row.unitPrice.toLocaleString('es-AR')}</td>
                 <td className="px-2 py-1.5 text-right font-mono">{row.total.toLocaleString('es-AR')}</td>
                 <td className="px-2 py-1.5 text-center"><StatusBadge status={row.status} /></td>

@@ -20,7 +20,7 @@ const INITIAL = {
   description: '',
   unit: '',
   quantity: '',
-  gremio: '',
+  rubro: '',
   unitPrice: '',
 }
 
@@ -80,7 +80,7 @@ export function BudgetRowForm({ allItems, projectId, onAdd }: BudgetRowFormProps
         description: form.description.trim(),
         unit: form.level === 'item' ? (form.unit || null) : 'gl',
         quantity: form.level === 'item' ? (parseFloat(form.quantity) || 0) : 1,
-        gremio: form.gremio || null,
+        rubro: form.rubro || null,
         unit_price: price,
         total_price: form.level === 'item' ? total : price,
         category: form.level === 'category' ? form.description.trim() : (allItems.find((i) => i.id === form.parentId)?.category || null),
@@ -144,9 +144,9 @@ export function BudgetRowForm({ allItems, projectId, onAdd }: BudgetRowFormProps
         )}
 
         <Input
-          label="Gremio"
-          value={form.gremio}
-          onChange={(e) => setForm({ ...form, gremio: e.target.value })}
+          label="Rubro"
+          value={form.rubro}
+          onChange={(e) => setForm({ ...form, rubro: e.target.value })}
           placeholder="Ej: Excavaciones"
         />
 

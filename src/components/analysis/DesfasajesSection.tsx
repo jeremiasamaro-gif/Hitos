@@ -1,11 +1,13 @@
 import { useState, useMemo } from 'react'
 import { useBudgetStore } from '@/store/budgetStore'
 import { useExpenseStore } from '@/store/expenseStore'
+import { useProjectContext } from '@/contexts/ProjectContext'
+import { useCurrencyStore } from '@/store/currencyStore'
 import { getSpentByParent } from '@/lib/analysis'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
-import { formatCompact } from '@/lib/formatUtils'
+import { formatCompact } from '@/utils/currency'
 import type { BudgetItem } from '@/lib/supabase'
 
 interface DesfasajeItem {
@@ -20,6 +22,8 @@ type FilterOption = 5 | 10 | 20 | 'all'
 export function DesfasajesSection() {
   const items = useBudgetStore((s) => s.items)
   const expenses = useExpenseStore((s) => s.expenses)
+  const { convert } = useProjectContext()
+  const { mode } = useCurrencyStore()
 
   const [filter, setFilter] = useState<FilterOption>(5)
   const [expandedId, setExpandedId] = useState<string | null>(null)
@@ -103,7 +107,7 @@ export function DesfasajesSection() {
                 <div>
                   <p className="text-sm font-medium text-primary">{d.item.description}</p>
                   <p className="text-xs text-secondary mt-1">
-                    Presupuestado: {formatCompact(d.budgeted)} &middot; Gastado: {formatCompact(d.spent)}
+                    Presupuestado: {formatCompact(convert(d.budgeted), mode)} &middot; Gastado: {formatCompact(convert(d.spent), mode)}
                   </p>
                 </div>
                 <div className="flex items-center gap-3">

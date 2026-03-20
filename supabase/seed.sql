@@ -76,113 +76,113 @@ begin
   -- ============================================
 
   -- 1. Movimiento de suelos — 8.500.000
-  insert into public.budget_items (id, project_id, item_code, description, unit, quantity, gremio, unit_price, total_price, category)
+  insert into public.budget_items (id, project_id, item_code, description, unit, quantity, rubro, unit_price, total_price, category)
   values (gen_random_uuid(), v_project_id, '1', 'Movimiento de suelos', 'gl', 1, 'Excavaciones', 8500000, 8500000, 'Movimiento de suelos')
   returning id into v_bi_movimiento;
 
-  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, gremio, unit_price, total_price, category)
+  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, rubro, unit_price, total_price, category)
   values (gen_random_uuid(), v_project_id, v_bi_movimiento, '1.1', 'Excavación para fundaciones', 'm3', 120, 'Excavaciones', 35000, 4200000, 'Movimiento de suelos')
   returning id into v_bi_excavacion;
-  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, gremio, unit_price, total_price, category)
+  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, rubro, unit_price, total_price, category)
   values (gen_random_uuid(), v_project_id, v_bi_movimiento, '1.2', 'Relleno y compactación', 'm3', 80, 'Excavaciones', 28000, 2240000, 'Movimiento de suelos')
   returning id into v_bi_relleno;
-  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, gremio, unit_price, total_price, category)
+  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, rubro, unit_price, total_price, category)
   values (gen_random_uuid(), v_project_id, v_bi_movimiento, '1.3', 'Retiro de sobrante', 'viaje', 10, 'Excavaciones', 206000, 2060000, 'Movimiento de suelos')
   returning id into v_bi_retiro;
 
   -- 2. Estructura — 35.200.000
-  insert into public.budget_items (id, project_id, item_code, description, unit, quantity, gremio, unit_price, total_price, category)
+  insert into public.budget_items (id, project_id, item_code, description, unit, quantity, rubro, unit_price, total_price, category)
   values (gen_random_uuid(), v_project_id, '2', 'Estructura', 'gl', 1, 'Estructura', 35200000, 35200000, 'Estructura')
   returning id into v_bi_estructura;
 
-  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, gremio, unit_price, total_price, category)
+  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, rubro, unit_price, total_price, category)
   values (gen_random_uuid(), v_project_id, v_bi_estructura, '2.1', 'Fundaciones H°A°', 'm3', 25, 'Estructura', 380000, 9500000, 'Estructura')
   returning id into v_bi_fundaciones;
-  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, gremio, unit_price, total_price, category)
+  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, rubro, unit_price, total_price, category)
   values (gen_random_uuid(), v_project_id, v_bi_estructura, '2.2', 'Columnas H°A°', 'ml', 60, 'Estructura', 185000, 11100000, 'Estructura')
   returning id into v_bi_columnas;
-  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, gremio, unit_price, total_price, category)
+  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, rubro, unit_price, total_price, category)
   values (gen_random_uuid(), v_project_id, v_bi_estructura, '2.3', 'Vigas H°A°', 'ml', 45, 'Estructura', 195000, 8775000, 'Estructura')
   returning id into v_bi_vigas;
-  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, gremio, unit_price, total_price, category)
+  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, rubro, unit_price, total_price, category)
   values (gen_random_uuid(), v_project_id, v_bi_estructura, '2.4', 'Losa H°A°', 'm2', 140, 'Estructura', 41607.14, 5825000, 'Estructura')
   returning id into v_bi_losa;
 
   -- 3. Albañilería — 22.400.000
-  insert into public.budget_items (id, project_id, item_code, description, unit, quantity, gremio, unit_price, total_price, category)
+  insert into public.budget_items (id, project_id, item_code, description, unit, quantity, rubro, unit_price, total_price, category)
   values (gen_random_uuid(), v_project_id, '3', 'Albañilería', 'gl', 1, 'Albañilería', 22400000, 22400000, 'Albañilería')
   returning id into v_bi_albanileria;
 
-  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, gremio, unit_price, total_price, category)
+  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, rubro, unit_price, total_price, category)
   values (gen_random_uuid(), v_project_id, v_bi_albanileria, '3.1', 'Mampostería de ladrillos', 'm2', 320, 'Albañilería', 42000, 13440000, 'Albañilería')
   returning id into v_bi_mamposteria;
-  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, gremio, unit_price, total_price, category)
+  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, rubro, unit_price, total_price, category)
   values (gen_random_uuid(), v_project_id, v_bi_albanileria, '3.2', 'Revoques grueso y fino', 'm2', 580, 'Albañilería', 15448.28, 8960000, 'Albañilería')
   returning id into v_bi_revoques;
 
   -- 4. Instalaciones — 28.500.000
-  insert into public.budget_items (id, project_id, item_code, description, unit, quantity, gremio, unit_price, total_price, category)
+  insert into public.budget_items (id, project_id, item_code, description, unit, quantity, rubro, unit_price, total_price, category)
   values (gen_random_uuid(), v_project_id, '4', 'Instalaciones', 'gl', 1, 'Instalaciones', 28500000, 28500000, 'Instalaciones')
   returning id into v_bi_instalaciones;
 
-  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, gremio, unit_price, total_price, category)
+  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, rubro, unit_price, total_price, category)
   values (gen_random_uuid(), v_project_id, v_bi_instalaciones, '4.1', 'Instalación eléctrica', 'gl', 1, 'Electricidad', 12000000, 12000000, 'Instalaciones')
   returning id into v_bi_electrica;
-  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, gremio, unit_price, total_price, category)
+  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, rubro, unit_price, total_price, category)
   values (gen_random_uuid(), v_project_id, v_bi_instalaciones, '4.2', 'Instalación sanitaria', 'gl', 1, 'Plomería', 9500000, 9500000, 'Instalaciones')
   returning id into v_bi_sanitaria;
-  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, gremio, unit_price, total_price, category)
+  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, rubro, unit_price, total_price, category)
   values (gen_random_uuid(), v_project_id, v_bi_instalaciones, '4.3', 'Instalación de gas', 'gl', 1, 'Gasista', 7000000, 7000000, 'Instalaciones')
   returning id into v_bi_gas;
 
   -- 5. Terminaciones — 25.800.000
-  insert into public.budget_items (id, project_id, item_code, description, unit, quantity, gremio, unit_price, total_price, category)
+  insert into public.budget_items (id, project_id, item_code, description, unit, quantity, rubro, unit_price, total_price, category)
   values (gen_random_uuid(), v_project_id, '5', 'Terminaciones', 'gl', 1, 'Terminaciones', 25800000, 25800000, 'Terminaciones')
   returning id into v_bi_terminaciones;
 
-  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, gremio, unit_price, total_price, category)
+  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, rubro, unit_price, total_price, category)
   values (gen_random_uuid(), v_project_id, v_bi_terminaciones, '5.1', 'Pisos cerámicos', 'm2', 140, 'Terminaciones', 65000, 9100000, 'Terminaciones')
   returning id into v_bi_pisos;
-  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, gremio, unit_price, total_price, category)
+  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, rubro, unit_price, total_price, category)
   values (gen_random_uuid(), v_project_id, v_bi_terminaciones, '5.2', 'Pintura interior/exterior', 'm2', 600, 'Pintura', 18000, 10800000, 'Terminaciones')
   returning id into v_bi_pintura;
-  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, gremio, unit_price, total_price, category)
+  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, rubro, unit_price, total_price, category)
   values (gen_random_uuid(), v_project_id, v_bi_terminaciones, '5.3', 'Revestimientos baños', 'm2', 45, 'Terminaciones', 131111.11, 5900000, 'Terminaciones')
   returning id into v_bi_revestimientos;
 
   -- 6. Aberturas — 15.200.000
-  insert into public.budget_items (id, project_id, item_code, description, unit, quantity, gremio, unit_price, total_price, category)
+  insert into public.budget_items (id, project_id, item_code, description, unit, quantity, rubro, unit_price, total_price, category)
   values (gen_random_uuid(), v_project_id, '6', 'Aberturas', 'gl', 1, 'Aberturas', 15200000, 15200000, 'Aberturas')
   returning id into v_bi_aberturas;
 
-  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, gremio, unit_price, total_price, category)
+  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, rubro, unit_price, total_price, category)
   values (gen_random_uuid(), v_project_id, v_bi_aberturas, '6.1', 'Ventanas aluminio DVH', 'un', 12, 'Carpintería', 850000, 10200000, 'Aberturas')
   returning id into v_bi_ventanas;
-  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, gremio, unit_price, total_price, category)
+  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, rubro, unit_price, total_price, category)
   values (gen_random_uuid(), v_project_id, v_bi_aberturas, '6.2', 'Puertas interiores', 'un', 8, 'Carpintería', 625000, 5000000, 'Aberturas')
   returning id into v_bi_puertas;
 
   -- 7. Equipamiento — 8.475.700
-  insert into public.budget_items (id, project_id, item_code, description, unit, quantity, gremio, unit_price, total_price, category)
+  insert into public.budget_items (id, project_id, item_code, description, unit, quantity, rubro, unit_price, total_price, category)
   values (gen_random_uuid(), v_project_id, '7', 'Equipamiento', 'gl', 1, 'Equipamiento', 8475700, 8475700, 'Equipamiento')
   returning id into v_bi_equipamiento;
 
-  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, gremio, unit_price, total_price, category)
+  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, rubro, unit_price, total_price, category)
   values (gen_random_uuid(), v_project_id, v_bi_equipamiento, '7.1', 'Griferías y sanitarios', 'gl', 1, 'Equipamiento', 4500000, 4500000, 'Equipamiento')
   returning id into v_bi_griferias;
-  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, gremio, unit_price, total_price, category)
+  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, rubro, unit_price, total_price, category)
   values (gen_random_uuid(), v_project_id, v_bi_equipamiento, '7.2', 'Mesadas y muebles fijos', 'gl', 1, 'Equipamiento', 3975700, 3975700, 'Equipamiento')
   returning id into v_bi_mesadas;
 
   -- 8. Exterior — 5.000.000
-  insert into public.budget_items (id, project_id, item_code, description, unit, quantity, gremio, unit_price, total_price, category)
+  insert into public.budget_items (id, project_id, item_code, description, unit, quantity, rubro, unit_price, total_price, category)
   values (gen_random_uuid(), v_project_id, '8', 'Exterior y paisajismo', 'gl', 1, 'Exterior', 5000000, 5000000, 'Exterior')
   returning id into v_bi_exterior;
 
-  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, gremio, unit_price, total_price, category)
+  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, rubro, unit_price, total_price, category)
   values (gen_random_uuid(), v_project_id, v_bi_exterior, '8.1', 'Vereda perimetral', 'm2', 60, 'Albañilería', 45000, 2700000, 'Exterior')
   returning id into v_bi_vereda;
-  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, gremio, unit_price, total_price, category)
+  insert into public.budget_items (id, project_id, parent_id, item_code, description, unit, quantity, rubro, unit_price, total_price, category)
   values (gen_random_uuid(), v_project_id, v_bi_exterior, '8.2', 'Parquización', 'gl', 1, 'Exterior', 2300000, 2300000, 'Exterior')
   returning id into v_bi_parquizacion;
 

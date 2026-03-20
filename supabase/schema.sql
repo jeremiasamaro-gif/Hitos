@@ -63,7 +63,7 @@ create table public.budget_items (
   description text not null,
   unit text,
   quantity numeric(12,2) not null default 0,
-  gremio text,
+  rubro text,
   unit_price numeric(14,2) not null default 0,
   total_price numeric(14,2) not null default 0,
   category text,

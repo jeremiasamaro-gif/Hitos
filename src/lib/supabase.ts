@@ -26,6 +26,7 @@ export interface User {
   firma_url: string | null
   firma_en_pdf: boolean
   logo_url: string | null
+  last_sign_in: string | null
   created_at: string
   updated_at: string
 }
@@ -67,7 +68,7 @@ export interface BudgetItem {
   description: string
   unit: string | null
   quantity: number
-  gremio: string | null
+  rubro: string | null
   unit_price: number
   total_price: number
   category: string | null

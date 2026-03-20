@@ -13,7 +13,7 @@ export async function getBudgetItems(projectId: string): Promise<BudgetItem[]> {
 
 export async function createBudgetItem(
   item: Pick<BudgetItem, 'project_id' | 'description' | 'quantity' | 'unit_price' | 'total_price'> &
-    Partial<Pick<BudgetItem, 'parent_id' | 'item_code' | 'unit' | 'gremio' | 'category'>>
+    Partial<Pick<BudgetItem, 'parent_id' | 'item_code' | 'unit' | 'rubro' | 'category'>>
 ): Promise<BudgetItem> {
   const { data, error } = await supabase
     .from('budget_items')
@@ -27,7 +27,7 @@ export async function createBudgetItem(
 
 export async function updateBudgetItem(
   id: string,
-  updates: Partial<Pick<BudgetItem, 'item_code' | 'description' | 'unit' | 'quantity' | 'gremio' | 'unit_price' | 'total_price' | 'category' | 'parent_id'>>
+  updates: Partial<Pick<BudgetItem, 'item_code' | 'description' | 'unit' | 'quantity' | 'rubro' | 'unit_price' | 'total_price' | 'category' | 'parent_id'>>
 ): Promise<BudgetItem> {
   const { data, error } = await supabase
     .from('budget_items')

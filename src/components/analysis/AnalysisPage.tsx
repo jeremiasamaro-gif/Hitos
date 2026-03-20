@@ -1,5 +1,6 @@
 import { useBudgetStore } from '@/store/budgetStore'
 import { useExpenseStore } from '@/store/expenseStore'
+import { useCurrencyStore } from '@/store/currencyStore'
 import { useProjectContext } from '@/contexts/ProjectContext'
 import { getExceededItems, getSavingItems, getProjectProjection } from '@/lib/analysis'
 import { DeviationsByCategory } from './DeviationsByCategory'
@@ -14,6 +15,7 @@ export function AnalysisPage() {
   const items = useBudgetStore((s) => s.items)
   const expenses = useExpenseStore((s) => s.expenses)
   const { globalProgress, totalBudget, totalSpent } = useProjectContext()
+  const { mode, setMode } = useCurrencyStore()
 
   const exceededItems = getExceededItems(items, expenses)
   const savingItems = getSavingItems(items, expenses, globalProgress)
@@ -21,7 +23,27 @@ export function AnalysisPage() {
 
   return (
     <div>
-      <h1 className="text-xl font-heading font-bold mb-6">Analisis de Proyecto</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-xl font-heading font-bold">Analisis de Proyecto</h1>
+        <div className="flex items-center gap-1 bg-card border border-border rounded-lg p-0.5">
+          <button
+            onClick={() => setMode('ARS')}
+            className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${
+              mode === 'ARS' ? 'bg-accent text-white' : 'text-secondary hover:text-primary'
+            }`}
+          >
+            ARS
+          </button>
+          <button
+            onClick={() => setMode('USD_BLUE')}
+            className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${
+              mode === 'USD_BLUE' ? 'bg-accent text-white' : 'text-secondary hover:text-primary'
+            }`}
+          >
+            USD Blue
+          </button>
+        </div>
+      </div>
 
       {/* New: Progress comparativa */}
       <section className="mb-8">

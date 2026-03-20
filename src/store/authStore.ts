@@ -52,6 +52,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       firma_url: null,
       firma_en_pdf: false,
       logo_url: null,
+      last_sign_in: new Date().toISOString(),
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     }

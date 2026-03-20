@@ -28,6 +28,24 @@ export function formatCompact(n: number): string {
  * - If startDate is in the future → returns 0
  * - If today or past → returns the current week (minimum 1)
  */
+/**
+ * Returns Tailwind classes for color-coded payment method badges
+ */
+export function getPaymentMethodStyle(method: string | null): { bg: string; text: string } {
+  switch ((method || '').toLowerCase()) {
+    case 'transferencia':
+      return { bg: 'bg-indigo-500/15', text: 'text-indigo-400' }
+    case 'efectivo':
+      return { bg: 'bg-emerald-500/15', text: 'text-emerald-400' }
+    case 'cheque':
+      return { bg: 'bg-amber-500/15', text: 'text-amber-400' }
+    case 'tarjeta':
+      return { bg: 'bg-sky-500/15', text: 'text-sky-400' }
+    default:
+      return { bg: 'bg-zinc-500/15', text: 'text-zinc-400' }
+  }
+}
+
 export function getWeekNumber(startDate: string | Date): number {
   const start = typeof startDate === 'string' ? new Date(startDate) : startDate
   const now = new Date()

@@ -23,7 +23,7 @@ interface EditState {
   description: string
   unit: string
   quantity: string
-  gremio: string
+  rubro: string
   unit_price: string
 }
 
@@ -33,7 +33,7 @@ interface InlineAddState {
   description: string
   unit: string
   quantity: string
-  gremio: string
+  rubro: string
   unitPrice: string
 }
 
@@ -61,7 +61,7 @@ export function BudgetTable({ tree, allItems, currencyMode, convert, onUpdate, o
       description: node.item.description,
       unit: node.item.unit || '',
       quantity: String(node.item.quantity),
-      gremio: node.item.gremio || '',
+      rubro: node.item.rubro || '',
       unit_price: String(node.item.unit_price),
     })
   }, [])
@@ -76,7 +76,7 @@ export function BudgetTable({ tree, allItems, currencyMode, convert, onUpdate, o
       description: editRow.description,
       unit: editRow.unit || null,
       quantity: qty,
-      gremio: editRow.gremio || null,
+      rubro: editRow.rubro || null,
       unit_price: price,
       total_price: qty * price,
     })
@@ -104,7 +104,7 @@ export function BudgetTable({ tree, allItems, currencyMode, convert, onUpdate, o
         description: '',
         unit: '',
         quantity: '',
-        gremio: '',
+        rubro: '',
         unitPrice: '',
       })
     } else {
@@ -131,7 +131,7 @@ export function BudgetTable({ tree, allItems, currencyMode, convert, onUpdate, o
               <th className="px-3 py-2">Descripcion</th>
               <th className="px-3 py-2 w-16">Ud.</th>
               <th className="px-3 py-2 w-20 text-right">Cant.</th>
-              <th className="px-3 py-2 w-28">Gremio</th>
+              <th className="px-3 py-2 w-28">Rubro</th>
               <th className="px-3 py-2 w-28 text-right">P. Unit.</th>
               <th className="px-3 py-2 w-32 text-right">Total</th>
               <th className="px-3 py-2 w-24 text-center">Acciones</th>
@@ -307,9 +307,9 @@ function CategoryGroup({ node, editRow, setEditRow, startEdit, cancelEdit, saveE
             </td>
             <td className="px-3 py-2 text-secondary text-xs">
               {isEditing ? (
-                <input className="bg-app border border-border rounded px-2 py-1 text-sm w-full" value={editRow!.gremio} onChange={(e) => setEditRow({ ...editRow!, gremio: e.target.value })} onKeyDown={handleKeyDown} />
+                <input className="bg-app border border-border rounded px-2 py-1 text-sm w-full" value={editRow!.rubro} onChange={(e) => setEditRow({ ...editRow!, rubro: e.target.value })} onKeyDown={handleKeyDown} />
               ) : (
-                node.item.gremio || '—'
+                node.item.rubro || '—'
               )}
             </td>
             <td className="px-3 py-2 text-right font-mono">
@@ -437,7 +437,7 @@ function InlineAddRow({ state, setState, onSave, projectId, parentId, parentCate
         description: state.description.trim(),
         unit: state.unit || null,
         quantity: qty,
-        gremio: state.gremio || null,
+        rubro: state.rubro || null,
         unit_price: price,
         total_price: total,
         category: parentCategory,
@@ -497,10 +497,10 @@ function InlineAddRow({ state, setState, onSave, projectId, parentId, parentCate
       <td className="px-3 py-1.5">
         <input
           className="bg-app border border-border rounded px-2 py-1 text-sm w-full"
-          value={state.gremio}
-          onChange={(e) => update({ gremio: e.target.value })}
+          value={state.rubro}
+          onChange={(e) => update({ rubro: e.target.value })}
           onKeyDown={handleKeyDown}
-          placeholder="Gremio"
+          placeholder="Rubro"
         />
       </td>
       <td className="px-3 py-1.5">

@@ -7,15 +7,58 @@ import { getSpentByParent } from '@/lib/analysis'
 import { getWeekNumber, formatCompact } from '@/lib/formatUtils'
 import { Card } from '@/components/ui/Card'
 
+interface WeekItemDetail {
+  name: string
+  amount: number
+}
+
 interface WeekData {
   name: string
   total: number
+  items: WeekItemDetail[]
+}
+
+function CustomTooltip({ active, payload }: any) {
+  if (!active || !payload?.length) return null
+
+  const data = payload[0]?.payload as WeekData | undefined
+  if (!data) return null
+
+  return (
+    <div
+      style={{
+        background: '#1A1A18',
+        borderRadius: 8,
+        padding: '10px 14px',
+        fontSize: 12,
+        color: '#e4e4e7',
+        minWidth: 200,
+        maxWidth: 280,
+      }}
+    >
+      <p style={{ fontWeight: 600, marginBottom: 6 }}>{data.name}</p>
+      {data.items.length > 0 ? (
+        data.items.map((item, i) => (
+          <p key={i} style={{ display: 'flex', justifyContent: 'space-between', gap: 12, marginBottom: 2 }}>
+            <span style={{ color: '#a1a1aa' }}>{item.name}</span>
+            <span style={{ fontFamily: 'monospace' }}>{formatCompact(item.amount)}</span>
+          </p>
+        ))
+      ) : (
+        <p style={{ color: '#71717a' }}>Sin rubros programados</p>
+      )}
+      <div style={{ borderTop: '1px solid #27272a', marginTop: 6, paddingTop: 6, display: 'flex', justifyContent: 'space-between' }}>
+        <span style={{ fontWeight: 600 }}>Total</span>
+        <span style={{ fontWeight: 600, fontFamily: 'monospace' }}>{formatCompact(data.total)}</span>
+      </div>
+    </div>
+  )
 }
 
 export function ProximosVencimientos() {
   const items = useBudgetStore((s) => s.items)
   const expenses = useExpenseStore((s) => s.expenses)
-  const { project } = useProjectContext()
+  const { project, convert } = useProjectContext()
 
   const currentWeek = project.start_date ? getWeekNumber(project.start_date) : 1
 
@@ -27,13 +70,16 @@ export function ProximosVencimientos() {
 
     for (let w = currentWeek + 1; w <= currentWeek + 4; w++) {
       let weekTotal = 0
+      const weekItems: WeekItemDetail[] = []
+
       for (const p of parents) {
         if (p.week_number === w) {
-          // Check if item has < 100% execution
           const spent = spentMap.get(p.id) || 0
           const executionPct = p.total_price > 0 ? (spent / p.total_price) * 100 : 0
           if (executionPct < 100) {
-            weekTotal += p.total_price
+            const amount = convert(p.total_price)
+            weekTotal += amount
+            weekItems.push({ name: p.description, amount })
           }
         }
       }
@@ -45,15 +91,17 @@ export function ProximosVencimientos() {
         if (parent) {
           const executionPct = parent.total_price > 0 ? (parentSpent / parent.total_price) * 100 : 0
           if (executionPct < 100) {
-            weekTotal += child.total_price
+            const amount = convert(child.total_price)
+            weekTotal += amount
+            weekItems.push({ name: child.description, amount })
           }
         }
       }
-      data.push({ name: `Semana ${w}`, total: weekTotal })
+      data.push({ name: `Semana ${w}`, total: weekTotal, items: weekItems })
     }
 
     return data
-  }, [items, currentWeek, spentMap])
+  }, [items, currentWeek, spentMap, convert])
 
   const totalNext4 = weekData.reduce((sum, w) => sum + w.total, 0)
 
@@ -62,13 +110,13 @@ export function ProximosVencimientos() {
   return (
     <div>
       <h2 className="text-sm font-heading font-semibold text-secondary uppercase tracking-wider mb-4">
-        Próximos vencimientos
+        Proximos vencimientos
       </h2>
 
       <Card className="p-4">
         {totalNext4 === 0 ? (
           <p className="text-sm text-secondary">
-            No hay rubros programados para las próximas 4 semanas.
+            No hay rubros programados para las proximas 4 semanas.
           </p>
         ) : (
           <>
@@ -77,16 +125,13 @@ export function ProximosVencimientos() {
                 <BarChart data={weekData} margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
                   <XAxis dataKey="name" tick={{ fontSize: 12 }} />
                   <YAxis tickFormatter={formatYAxis} tick={{ fontSize: 11 }} width={70} />
-                  <Tooltip
-                    formatter={(value: number) => [formatCompact(value), 'Planificado']}
-                    contentStyle={{ fontSize: 12 }}
-                  />
+                  <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
                   <Bar dataKey="total" fill="#6366f1" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
             <p className="text-sm text-secondary mt-3">
-              Total necesario próximas 4 semanas:{' '}
+              Total necesario proximas 4 semanas:{' '}
               <span className="font-semibold text-primary">{formatCompact(totalNext4)}</span>
             </p>
           </>

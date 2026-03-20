@@ -14,6 +14,7 @@ export const mockUsers: User[] = [
     firma_url: null,
     firma_en_pdf: false,
     logo_url: null,
+    last_sign_in: '2026-03-20T08:30:00Z',
     created_at: '2026-01-01T10:00:00Z',
     updated_at: '2026-01-01T10:00:00Z',
   },
@@ -27,6 +28,7 @@ export const mockUsers: User[] = [
     firma_url: null,
     firma_en_pdf: false,
     logo_url: null,
+    last_sign_in: '2026-03-19T14:20:00Z',
     created_at: '2026-01-15T10:00:00Z',
     updated_at: '2026-01-15T10:00:00Z',
   },
@@ -40,6 +42,7 @@ export const mockUsers: User[] = [
     firma_url: null,
     firma_en_pdf: false,
     logo_url: null,
+    last_sign_in: '2026-03-18T09:15:00Z',
     created_at: '2026-02-01T10:00:00Z',
     updated_at: '2026-02-01T10:00:00Z',
   },
@@ -53,6 +56,7 @@ export const mockUsers: User[] = [
     firma_url: null,
     firma_en_pdf: false,
     logo_url: null,
+    last_sign_in: '2026-03-15T16:45:00Z',
     created_at: '2026-02-10T10:00:00Z',
     updated_at: '2026-02-10T10:00:00Z',
   },
@@ -66,6 +70,7 @@ export const mockUsers: User[] = [
     firma_url: null,
     firma_en_pdf: false,
     logo_url: null,
+    last_sign_in: '2026-03-10T11:00:00Z',
     created_at: '2026-02-15T10:00:00Z',
     updated_at: '2026-02-15T10:00:00Z',
   },
@@ -79,6 +84,7 @@ export const mockUsers: User[] = [
     firma_url: null,
     firma_en_pdf: false,
     logo_url: null,
+    last_sign_in: '2026-03-05T20:30:00Z',
     created_at: '2026-03-01T10:00:00Z',
     updated_at: '2026-03-01T10:00:00Z',
   },
@@ -148,49 +154,49 @@ export const mockProjectMembers: ProjectMember[] = [
 // ============================================
 export const mockBudgetItems: BudgetItem[] = [
   // 1. Movimiento de suelos — 8.500.000
-  { id: 'bi-1', project_id: '11111111-1111-1111-1111-111111111111', parent_id: null, item_code: '1', description: 'Movimiento de suelos', unit: 'gl', quantity: 1, gremio: 'Excavaciones', unit_price: 8500000, total_price: 8500000, category: 'Movimiento de suelos', week_number: null, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
-  { id: 'bi-1-1', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-1', item_code: '1.1', description: 'Excavación para fundaciones', unit: 'm3', quantity: 120, gremio: 'Excavaciones', unit_price: 35000, total_price: 4200000, category: 'Movimiento de suelos', week_number: 1, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
-  { id: 'bi-1-2', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-1', item_code: '1.2', description: 'Relleno y compactación', unit: 'm3', quantity: 80, gremio: 'Excavaciones', unit_price: 28000, total_price: 2240000, category: 'Movimiento de suelos', week_number: 2, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
-  { id: 'bi-1-3', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-1', item_code: '1.3', description: 'Retiro de sobrante', unit: 'viaje', quantity: 10, gremio: 'Excavaciones', unit_price: 206000, total_price: 2060000, category: 'Movimiento de suelos', week_number: 3, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
+  { id: 'bi-1', project_id: '11111111-1111-1111-1111-111111111111', parent_id: null, item_code: '1', description: 'Movimiento de suelos', unit: 'gl', quantity: 1, rubro: 'Excavaciones', unit_price: 8500000, total_price: 8500000, category: 'Movimiento de suelos', week_number: null, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
+  { id: 'bi-1-1', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-1', item_code: '1.1', description: 'Excavación para fundaciones', unit: 'm3', quantity: 120, rubro: 'Excavaciones', unit_price: 35000, total_price: 4200000, category: 'Movimiento de suelos', week_number: 1, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
+  { id: 'bi-1-2', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-1', item_code: '1.2', description: 'Relleno y compactación', unit: 'm3', quantity: 80, rubro: 'Excavaciones', unit_price: 28000, total_price: 2240000, category: 'Movimiento de suelos', week_number: 2, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
+  { id: 'bi-1-3', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-1', item_code: '1.3', description: 'Retiro de sobrante', unit: 'viaje', quantity: 10, rubro: 'Excavaciones', unit_price: 206000, total_price: 2060000, category: 'Movimiento de suelos', week_number: 3, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
 
   // 2. Estructura — 35.200.000
-  { id: 'bi-2', project_id: '11111111-1111-1111-1111-111111111111', parent_id: null, item_code: '2', description: 'Estructura', unit: 'gl', quantity: 1, gremio: 'Estructura', unit_price: 35200000, total_price: 35200000, category: 'Estructura', week_number: null, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
-  { id: 'bi-2-1', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-2', item_code: '2.1', description: 'Fundaciones H°A°', unit: 'm3', quantity: 25, gremio: 'Estructura', unit_price: 380000, total_price: 9500000, category: 'Estructura', week_number: 4, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
-  { id: 'bi-2-2', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-2', item_code: '2.2', description: 'Columnas H°A°', unit: 'ml', quantity: 60, gremio: 'Estructura', unit_price: 185000, total_price: 11100000, category: 'Estructura', week_number: 6, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
-  { id: 'bi-2-3', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-2', item_code: '2.3', description: 'Vigas H°A°', unit: 'ml', quantity: 45, gremio: 'Estructura', unit_price: 195000, total_price: 8775000, category: 'Estructura', week_number: 7, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
-  { id: 'bi-2-4', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-2', item_code: '2.4', description: 'Losa H°A°', unit: 'm2', quantity: 140, gremio: 'Estructura', unit_price: 41607.14, total_price: 5825000, category: 'Estructura', week_number: 8, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
+  { id: 'bi-2', project_id: '11111111-1111-1111-1111-111111111111', parent_id: null, item_code: '2', description: 'Estructura', unit: 'gl', quantity: 1, rubro: 'Estructura', unit_price: 35200000, total_price: 35200000, category: 'Estructura', week_number: null, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
+  { id: 'bi-2-1', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-2', item_code: '2.1', description: 'Fundaciones H°A°', unit: 'm3', quantity: 25, rubro: 'Estructura', unit_price: 380000, total_price: 9500000, category: 'Estructura', week_number: 4, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
+  { id: 'bi-2-2', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-2', item_code: '2.2', description: 'Columnas H°A°', unit: 'ml', quantity: 60, rubro: 'Estructura', unit_price: 185000, total_price: 11100000, category: 'Estructura', week_number: 6, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
+  { id: 'bi-2-3', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-2', item_code: '2.3', description: 'Vigas H°A°', unit: 'ml', quantity: 45, rubro: 'Estructura', unit_price: 195000, total_price: 8775000, category: 'Estructura', week_number: 7, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
+  { id: 'bi-2-4', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-2', item_code: '2.4', description: 'Losa H°A°', unit: 'm2', quantity: 140, rubro: 'Estructura', unit_price: 41607.14, total_price: 5825000, category: 'Estructura', week_number: 8, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
 
   // 3. Albañilería — 22.400.000
-  { id: 'bi-3', project_id: '11111111-1111-1111-1111-111111111111', parent_id: null, item_code: '3', description: 'Albañilería', unit: 'gl', quantity: 1, gremio: 'Albañilería', unit_price: 22400000, total_price: 22400000, category: 'Albañilería', week_number: null, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
-  { id: 'bi-3-1', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-3', item_code: '3.1', description: 'Mampostería de ladrillos', unit: 'm2', quantity: 320, gremio: 'Albañilería', unit_price: 42000, total_price: 13440000, category: 'Albañilería', week_number: 9, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
-  { id: 'bi-3-2', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-3', item_code: '3.2', description: 'Revoques grueso y fino', unit: 'm2', quantity: 580, gremio: 'Albañilería', unit_price: 15448.28, total_price: 8960000, category: 'Albañilería', week_number: 10, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
+  { id: 'bi-3', project_id: '11111111-1111-1111-1111-111111111111', parent_id: null, item_code: '3', description: 'Albañilería', unit: 'gl', quantity: 1, rubro: 'Albañilería', unit_price: 22400000, total_price: 22400000, category: 'Albañilería', week_number: null, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
+  { id: 'bi-3-1', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-3', item_code: '3.1', description: 'Mampostería de ladrillos', unit: 'm2', quantity: 320, rubro: 'Albañilería', unit_price: 42000, total_price: 13440000, category: 'Albañilería', week_number: 9, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
+  { id: 'bi-3-2', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-3', item_code: '3.2', description: 'Revoques grueso y fino', unit: 'm2', quantity: 580, rubro: 'Albañilería', unit_price: 15448.28, total_price: 8960000, category: 'Albañilería', week_number: 10, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
 
   // 4. Instalaciones — 28.500.000
-  { id: 'bi-4', project_id: '11111111-1111-1111-1111-111111111111', parent_id: null, item_code: '4', description: 'Instalaciones', unit: 'gl', quantity: 1, gremio: 'Instalaciones', unit_price: 28500000, total_price: 28500000, category: 'Instalaciones', week_number: null, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
-  { id: 'bi-4-1', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-4', item_code: '4.1', description: 'Instalación eléctrica', unit: 'gl', quantity: 1, gremio: 'Electricidad', unit_price: 12000000, total_price: 12000000, category: 'Instalaciones', week_number: 10, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
-  { id: 'bi-4-2', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-4', item_code: '4.2', description: 'Instalación sanitaria', unit: 'gl', quantity: 1, gremio: 'Plomería', unit_price: 9500000, total_price: 9500000, category: 'Instalaciones', week_number: 11, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
-  { id: 'bi-4-3', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-4', item_code: '4.3', description: 'Instalación de gas', unit: 'gl', quantity: 1, gremio: 'Gasista', unit_price: 7000000, total_price: 7000000, category: 'Instalaciones', week_number: 12, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
+  { id: 'bi-4', project_id: '11111111-1111-1111-1111-111111111111', parent_id: null, item_code: '4', description: 'Instalaciones', unit: 'gl', quantity: 1, rubro: 'Instalaciones', unit_price: 28500000, total_price: 28500000, category: 'Instalaciones', week_number: null, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
+  { id: 'bi-4-1', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-4', item_code: '4.1', description: 'Instalación eléctrica', unit: 'gl', quantity: 1, rubro: 'Electricidad', unit_price: 12000000, total_price: 12000000, category: 'Instalaciones', week_number: 10, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
+  { id: 'bi-4-2', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-4', item_code: '4.2', description: 'Instalación sanitaria', unit: 'gl', quantity: 1, rubro: 'Plomería', unit_price: 9500000, total_price: 9500000, category: 'Instalaciones', week_number: 11, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
+  { id: 'bi-4-3', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-4', item_code: '4.3', description: 'Instalación de gas', unit: 'gl', quantity: 1, rubro: 'Gasista', unit_price: 7000000, total_price: 7000000, category: 'Instalaciones', week_number: 12, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
 
   // 5. Terminaciones — 25.800.000
-  { id: 'bi-5', project_id: '11111111-1111-1111-1111-111111111111', parent_id: null, item_code: '5', description: 'Terminaciones', unit: 'gl', quantity: 1, gremio: 'Terminaciones', unit_price: 25800000, total_price: 25800000, category: 'Terminaciones', week_number: null, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
-  { id: 'bi-5-1', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-5', item_code: '5.1', description: 'Pisos cerámicos', unit: 'm2', quantity: 140, gremio: 'Terminaciones', unit_price: 65000, total_price: 9100000, category: 'Terminaciones', week_number: 14, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
-  { id: 'bi-5-2', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-5', item_code: '5.2', description: 'Pintura interior/exterior', unit: 'm2', quantity: 600, gremio: 'Pintura', unit_price: 18000, total_price: 10800000, category: 'Terminaciones', week_number: 16, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
-  { id: 'bi-5-3', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-5', item_code: '5.3', description: 'Revestimientos baños', unit: 'm2', quantity: 45, gremio: 'Terminaciones', unit_price: 131111.11, total_price: 5900000, category: 'Terminaciones', week_number: 18, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
+  { id: 'bi-5', project_id: '11111111-1111-1111-1111-111111111111', parent_id: null, item_code: '5', description: 'Terminaciones', unit: 'gl', quantity: 1, rubro: 'Terminaciones', unit_price: 25800000, total_price: 25800000, category: 'Terminaciones', week_number: null, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
+  { id: 'bi-5-1', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-5', item_code: '5.1', description: 'Pisos cerámicos', unit: 'm2', quantity: 140, rubro: 'Terminaciones', unit_price: 65000, total_price: 9100000, category: 'Terminaciones', week_number: 14, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
+  { id: 'bi-5-2', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-5', item_code: '5.2', description: 'Pintura interior/exterior', unit: 'm2', quantity: 600, rubro: 'Pintura', unit_price: 18000, total_price: 10800000, category: 'Terminaciones', week_number: 16, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
+  { id: 'bi-5-3', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-5', item_code: '5.3', description: 'Revestimientos baños', unit: 'm2', quantity: 45, rubro: 'Terminaciones', unit_price: 131111.11, total_price: 5900000, category: 'Terminaciones', week_number: 18, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
 
   // 6. Aberturas — 15.200.000
-  { id: 'bi-6', project_id: '11111111-1111-1111-1111-111111111111', parent_id: null, item_code: '6', description: 'Aberturas', unit: 'gl', quantity: 1, gremio: 'Aberturas', unit_price: 15200000, total_price: 15200000, category: 'Aberturas', week_number: null, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
-  { id: 'bi-6-1', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-6', item_code: '6.1', description: 'Ventanas aluminio DVH', unit: 'un', quantity: 12, gremio: 'Carpintería', unit_price: 850000, total_price: 10200000, category: 'Aberturas', week_number: 20, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
-  { id: 'bi-6-2', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-6', item_code: '6.2', description: 'Puertas interiores', unit: 'un', quantity: 8, gremio: 'Carpintería', unit_price: 625000, total_price: 5000000, category: 'Aberturas', week_number: 22, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
+  { id: 'bi-6', project_id: '11111111-1111-1111-1111-111111111111', parent_id: null, item_code: '6', description: 'Aberturas', unit: 'gl', quantity: 1, rubro: 'Aberturas', unit_price: 15200000, total_price: 15200000, category: 'Aberturas', week_number: null, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
+  { id: 'bi-6-1', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-6', item_code: '6.1', description: 'Ventanas aluminio DVH', unit: 'un', quantity: 12, rubro: 'Carpintería', unit_price: 850000, total_price: 10200000, category: 'Aberturas', week_number: 20, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
+  { id: 'bi-6-2', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-6', item_code: '6.2', description: 'Puertas interiores', unit: 'un', quantity: 8, rubro: 'Carpintería', unit_price: 625000, total_price: 5000000, category: 'Aberturas', week_number: 22, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
 
   // 7. Equipamiento — 8.475.700
-  { id: 'bi-7', project_id: '11111111-1111-1111-1111-111111111111', parent_id: null, item_code: '7', description: 'Equipamiento', unit: 'gl', quantity: 1, gremio: 'Equipamiento', unit_price: 8475700, total_price: 8475700, category: 'Equipamiento', week_number: null, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
-  { id: 'bi-7-1', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-7', item_code: '7.1', description: 'Griferías y sanitarios', unit: 'gl', quantity: 1, gremio: 'Equipamiento', unit_price: 4500000, total_price: 4500000, category: 'Equipamiento', week_number: 24, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
-  { id: 'bi-7-2', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-7', item_code: '7.2', description: 'Mesadas y muebles fijos', unit: 'gl', quantity: 1, gremio: 'Equipamiento', unit_price: 3975700, total_price: 3975700, category: 'Equipamiento', week_number: 26, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
+  { id: 'bi-7', project_id: '11111111-1111-1111-1111-111111111111', parent_id: null, item_code: '7', description: 'Equipamiento', unit: 'gl', quantity: 1, rubro: 'Equipamiento', unit_price: 8475700, total_price: 8475700, category: 'Equipamiento', week_number: null, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
+  { id: 'bi-7-1', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-7', item_code: '7.1', description: 'Griferías y sanitarios', unit: 'gl', quantity: 1, rubro: 'Equipamiento', unit_price: 4500000, total_price: 4500000, category: 'Equipamiento', week_number: 24, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
+  { id: 'bi-7-2', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-7', item_code: '7.2', description: 'Mesadas y muebles fijos', unit: 'gl', quantity: 1, rubro: 'Equipamiento', unit_price: 3975700, total_price: 3975700, category: 'Equipamiento', week_number: 26, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
 
   // 8. Exterior — 5.000.000
-  { id: 'bi-8', project_id: '11111111-1111-1111-1111-111111111111', parent_id: null, item_code: '8', description: 'Exterior y paisajismo', unit: 'gl', quantity: 1, gremio: 'Exterior', unit_price: 5000000, total_price: 5000000, category: 'Exterior', week_number: null, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
-  { id: 'bi-8-1', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-8', item_code: '8.1', description: 'Vereda perimetral', unit: 'm2', quantity: 60, gremio: 'Albañilería', unit_price: 45000, total_price: 2700000, category: 'Exterior', week_number: 30, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
-  { id: 'bi-8-2', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-8', item_code: '8.2', description: 'Parquización', unit: 'gl', quantity: 1, gremio: 'Exterior', unit_price: 2300000, total_price: 2300000, category: 'Exterior', week_number: 34, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
+  { id: 'bi-8', project_id: '11111111-1111-1111-1111-111111111111', parent_id: null, item_code: '8', description: 'Exterior y paisajismo', unit: 'gl', quantity: 1, rubro: 'Exterior', unit_price: 5000000, total_price: 5000000, category: 'Exterior', week_number: null, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
+  { id: 'bi-8-1', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-8', item_code: '8.1', description: 'Vereda perimetral', unit: 'm2', quantity: 60, rubro: 'Albañilería', unit_price: 45000, total_price: 2700000, category: 'Exterior', week_number: 30, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
+  { id: 'bi-8-2', project_id: '11111111-1111-1111-1111-111111111111', parent_id: 'bi-8', item_code: '8.2', description: 'Parquización', unit: 'gl', quantity: 1, rubro: 'Exterior', unit_price: 2300000, total_price: 2300000, category: 'Exterior', week_number: 34, created_at: '2026-01-10T10:00:00Z', updated_at: '2026-01-10T10:00:00Z' },
 ]
 
 // ============================================

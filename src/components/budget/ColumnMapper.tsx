@@ -12,7 +12,7 @@ const FIELDS: { key: keyof ColumnMapping; label: string; required: boolean }[] =
   { key: 'descripcion', label: 'Descripcion', required: true },
   { key: 'unidad', label: 'Unidad', required: false },
   { key: 'cantidad', label: 'Cantidad', required: false },
-  { key: 'gremio', label: 'Gremio', required: false },
+  { key: 'rubro', label: 'Rubro', required: false },
   { key: 'precioUnitario', label: 'Precio unitario', required: false },
   { key: 'total', label: 'Total (opcional)', required: false },
 ]

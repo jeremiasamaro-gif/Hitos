@@ -2,11 +2,12 @@ import { useState, useMemo } from 'react'
 import { useBudgetStore } from '@/store/budgetStore'
 import { useExpenseStore } from '@/store/expenseStore'
 import { useProjectContext } from '@/contexts/ProjectContext'
+import { useCurrencyStore } from '@/store/currencyStore'
 import { getSpentByParent } from '@/lib/analysis'
 import { Card } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
-import { formatCompact } from '@/lib/formatUtils'
+import { formatCompact } from '@/utils/currency'
 
 interface AdjustableItem {
   id: string
@@ -19,7 +20,8 @@ interface AdjustableItem {
 export function SimuladorEscenarios() {
   const items = useBudgetStore((s) => s.items)
   const expenses = useExpenseStore((s) => s.expenses)
-  const { totalBudget, totalSpent, project } = useProjectContext()
+  const { totalBudget, totalSpent, project, convert } = useProjectContext()
+  const { mode } = useCurrencyStore()
 
   const adjustableItems = useMemo<AdjustableItem[]>(() => {
     const parents = items.filter((i) => !i.parent_id)
@@ -122,13 +124,13 @@ export function SimuladorEscenarios() {
           <Card className="p-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm text-secondary">Con estos ajustes, el costo total sería:</span>
-              <span className="text-lg font-bold text-primary">{formatCompact(newTotal)}</span>
+              <span className="text-lg font-bold text-primary">{formatCompact(convert(newTotal), mode)}</span>
             </div>
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm text-secondary">Diferencia:</span>
               <div className="flex items-center gap-2">
                 <Badge variant={isOverBudget ? 'danger' : 'success'}>
-                  {isOverBudget ? '+' : ''}{formatCompact(difference)}
+                  {isOverBudget ? '+' : ''}{formatCompact(convert(difference), mode)}
                 </Badge>
               </div>
             </div>

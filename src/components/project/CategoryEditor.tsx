@@ -88,7 +88,7 @@ export function CategoryEditor({ projectId }: CategoryEditorProps) {
       description: newName.trim(),
       unit: 'gl',
       quantity: 1,
-      gremio: null,
+      rubro: null,
       unit_price: 0,
       total_price: 0,
       category: parent?.category || parent?.description || null,

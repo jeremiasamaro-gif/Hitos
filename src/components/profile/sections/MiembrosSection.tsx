@@ -1,5 +1,7 @@
 import { useState, useMemo } from 'react'
 import { Search, Key, Trash2, Users } from 'lucide-react'
+import { formatDistanceToNow } from 'date-fns'
+import { es } from 'date-fns/locale'
 import { useAuthStore } from '@/store/authStore'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
@@ -13,6 +15,7 @@ interface ClientMember {
   initial: string
   projects: { id: string; name: string }[]
   firstAccess: string
+  lastSignIn: string | null
 }
 
 export function MiembrosSection() {
@@ -53,6 +56,7 @@ export function MiembrosSection() {
           initial: u.name.charAt(0).toUpperCase(),
           projects: [{ id: project.id, name: project.name }],
           firstAccess: membership.created_at,
+          lastSignIn: u.last_sign_in,
         })
       }
     }
@@ -127,6 +131,7 @@ export function MiembrosSection() {
                   <th className="px-2 py-2">Email</th>
                   <th className="px-2 py-2">Proyectos asignados</th>
                   <th className="px-2 py-2">Fecha de acceso</th>
+                  <th className="px-2 py-2">Ultima conexion</th>
                   <th className="px-2 py-2 text-right">Acciones</th>
                 </tr>
               </thead>
@@ -149,6 +154,11 @@ export function MiembrosSection() {
                       <ProjectChips projects={client.projects} />
                     </td>
                     <td className="px-2 py-2 text-secondary">{formatDate(client.firstAccess)}</td>
+                    <td className="px-2 py-2 text-secondary text-xs">
+                      {client.lastSignIn
+                        ? formatDistanceToNow(new Date(client.lastSignIn), { addSuffix: true, locale: es })
+                        : 'Nunca'}
+                    </td>
                     <td className="px-2 py-2 text-right">
                       <div className="flex items-center justify-end gap-1">
                         <button

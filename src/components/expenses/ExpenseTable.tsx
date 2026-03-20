@@ -5,7 +5,7 @@ import { useAuthStore } from '@/store/authStore'
 import { useCurrencyStore } from '@/store/currencyStore'
 import { formatCurrency } from '@/utils/currency'
 import { formatDate, formatWeek } from '@/utils/formatters'
-import { Badge } from '@/components/ui/Badge'
+import { getPaymentMethodStyle } from '@/lib/formatUtils'
 import { ExpenseFormModal } from './ExpenseFormModal'
 import { Pencil, Trash2, Copy, Paperclip } from 'lucide-react'
 import type { Expense, TipoGasto } from '@/lib/supabase'
@@ -132,7 +132,14 @@ export function ExpenseTable({ searchQuery = '' }: ExpenseTableProps) {
                       {formatCurrency(convert(exp.amount_ars), mode)}
                     </td>
                     <td className="py-2 px-3 text-center">
-                      <Badge>{exp.payment_method || '-'}</Badge>
+                      {exp.payment_method ? (() => {
+                        const pStyle = getPaymentMethodStyle(exp.payment_method)
+                        return (
+                          <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-medium ${pStyle.bg} ${pStyle.text}`}>
+                            {exp.payment_method}
+                          </span>
+                        )
+                      })() : <span className="text-secondary">-</span>}
                     </td>
                     <td className="py-2 px-3 text-center text-xs text-secondary">
                       {exp.week_number ? formatWeek(exp.week_number) : '-'}

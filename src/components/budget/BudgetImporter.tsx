@@ -20,7 +20,7 @@ export function BudgetImporter({ existingItems, projectId, onImport, onCancel }:
   const [headers, setHeaders] = useState<string[]>([])
   const [rawRows, setRawRows] = useState<RawImportRow[]>([])
   const [mapping, setMapping] = useState<ColumnMapping>({
-    codigo: '', descripcion: '', unidad: '', cantidad: '', gremio: '', precioUnitario: '', total: '',
+    codigo: '', descripcion: '', unidad: '', cantidad: '', rubro: '', precioUnitario: '', total: '',
   })
   const [validated, setValidated] = useState<ValidatedImportRow[]>([])
   const [importing, setImporting] = useState(false)
@@ -96,7 +96,7 @@ export function BudgetImporter({ existingItems, projectId, onImport, onCancel }:
           description: r.description,
           unit: r.unit || null,
           quantity: r.quantity,
-          gremio: r.gremio || null,
+          rubro: r.rubro || null,
           unit_price: r.unitPrice,
           total_price: r.total,
           category: parentItem?.category || r.description,
@@ -203,7 +203,7 @@ const COLUMN_PATTERNS: Record<string, string[]> = {
   descripcion: ['descripcion', 'description', 'desc', 'detalle', 'concepto', 'nombre'],
   unidad: ['unidad', 'unit', 'ud', 'u.m.'],
   cantidad: ['cantidad', 'qty', 'quantity', 'cant'],
-  gremio: ['gremio', 'rubro', 'oficio', 'trade'],
+  rubro: ['rubro', 'gremio', 'oficio', 'trade'],
   precioUnitario: ['precio', 'price', 'p.unit', 'unitario', 'costo'],
   total: ['total', 'importe', 'monto', 'amount', 'subtotal'],
 }

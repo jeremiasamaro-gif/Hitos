@@ -141,7 +141,7 @@ export interface ColumnMapping {
   descripcion: string
   unidad: string
   cantidad: string
-  gremio: string
+  rubro: string
   precioUnitario: string
   total: string // optional
 }
@@ -157,7 +157,7 @@ export interface ValidatedImportRow {
   description: string
   unit: string
   quantity: number
-  gremio: string
+  rubro: string
   unitPrice: number
   total: number
   status: ValidationStatus
@@ -175,7 +175,7 @@ export function validateImportRows(
     const description = String(row[mapping.descripcion] ?? '').trim()
     const unit = String(row[mapping.unidad] ?? '').trim()
     const quantity = parseFloat(String(row[mapping.cantidad] ?? '0')) || 0
-    const gremio = String(row[mapping.gremio] ?? '').trim()
+    const rubro = String(row[mapping.rubro] ?? '').trim()
     const unitPrice = parseFloat(String(row[mapping.precioUnitario] ?? '0')) || 0
     const mappedTotal = mapping.total ? parseFloat(String(row[mapping.total] ?? '0')) || 0 : 0
     const total = mappedTotal > 0 ? mappedTotal : quantity * unitPrice
@@ -191,7 +191,7 @@ export function validateImportRows(
 
     seenCodes.add(code)
 
-    return { code, description, unit, quantity, gremio, unitPrice, total, status }
+    return { code, description, unit, quantity, rubro, unitPrice, total, status }
   })
 }
 

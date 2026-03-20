@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ChevronDown, User, Settings, LogOut } from 'lucide-react'
+import { ChevronDown, User, Settings, Shield, LogOut } from 'lucide-react'
 import { useAuthStore } from '@/store/authStore'
 
 interface UserMenuProps {
@@ -96,6 +96,13 @@ export function UserMenu({ userName, userRole, userEmail, currentProjectId }: Us
           >
             <Settings size={15} />
             Configuración
+          </button>
+          <button
+            onClick={() => handleNavigate('/perfil', 'seguridad')}
+            className="flex items-center gap-2.5 w-full px-3 py-2 rounded-lg text-sm text-primary hover:bg-hover transition-colors"
+          >
+            <Shield size={15} />
+            Seguridad
           </button>
 
           {/* Separator */}
