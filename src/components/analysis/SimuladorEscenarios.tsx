@@ -4,9 +4,6 @@ import { useExpenseStore } from '@/store/expenseStore'
 import { useProjectContext } from '@/contexts/ProjectContext'
 import { useCurrencyStore } from '@/store/currencyStore'
 import { getSpentByParent } from '@/lib/analysis'
-import { Card } from '@/components/ui/Card'
-import { Badge } from '@/components/ui/Badge'
-import { Button } from '@/components/ui/Button'
 import { formatCompact } from '@/utils/currency'
 
 interface AdjustableItem {
@@ -92,61 +89,128 @@ export function SimuladorEscenarios() {
   if (!shouldShow) return null
 
   return (
-    <div>
-      <h2 className="text-sm font-heading font-semibold text-secondary uppercase tracking-wider mb-4">
+    <div
+      style={{
+        background: '#F0EFFE',
+        border: '1px solid #C7D2FE',
+        borderRadius: 'var(--radius-lg)',
+        padding: '20px 24px',
+      }}
+    >
+      {/* Título */}
+      <div
+        style={{
+          fontSize: 11,
+          fontWeight: 600,
+          color: 'var(--color-accent)',
+          letterSpacing: '0.08em',
+          textTransform: 'uppercase',
+          marginBottom: 16,
+        }}
+      >
         Simulador de ajuste
-      </h2>
+      </div>
 
       {adjustableItems.length === 0 ? (
-        <p className="text-sm text-secondary">No hay rubros con menos del 50% ejecutado para ajustar.</p>
+        <p style={{ fontSize: 14, color: 'var(--color-text-secondary)' }}>
+          No hay rubros con menos del 50% ejecutado para ajustar.
+        </p>
       ) : (
         <>
-          <div className="space-y-3 mb-6">
+          {/* Lista de sliders */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 20 }}>
             {adjustableItems.map((item) => {
               const val = getSliderValue(item.id)
               return (
-                <div key={item.id} className="flex items-center gap-4">
-                  <span className="text-sm text-primary w-48 truncate">{item.description}</span>
+                <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                  <span
+                    style={{
+                      minWidth: 160,
+                      fontSize: 14,
+                      color: 'var(--color-text-primary)',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {item.description}
+                  </span>
                   <input
                     type="range"
                     min={0}
                     max={100}
                     value={val}
                     onChange={(e) => handleSliderChange(item.id, Number(e.target.value))}
-                    className="flex-1"
+                    style={{ flex: 1, accentColor: 'var(--color-accent)' }}
                   />
-                  <span className="text-sm font-medium text-primary w-12 text-right">{val}%</span>
+                  <span
+                    style={{
+                      minWidth: 40,
+                      textAlign: 'right',
+                      fontSize: 13,
+                      color: 'var(--color-text-secondary)',
+                      fontFamily: 'var(--font-mono)',
+                    }}
+                  >
+                    {val}%
+                  </span>
                 </div>
               )
             })}
           </div>
 
-          <Card className="p-4">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-secondary">Con estos ajustes, el costo total sería:</span>
-              <span className="text-lg font-bold text-primary">{formatCompact(convert(newTotal), mode)}</span>
+          {/* Separador interno */}
+          <div style={{ borderTop: '1px solid #C7D2FE', marginBottom: 16 }} />
+
+          {/* Panel de resultado — mismo fondo, sin card separada */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14 }}>
+              <span style={{ color: 'var(--color-text-secondary)' }}>
+                Con estos ajustes, el costo total sería:
+              </span>
+              <span style={{ fontWeight: 700, color: 'var(--color-text-primary)' }}>
+                {formatCompact(convert(newTotal), mode)}
+              </span>
             </div>
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-secondary">Diferencia:</span>
-              <div className="flex items-center gap-2">
-                <Badge variant={isOverBudget ? 'danger' : 'success'}>
-                  {isOverBudget ? '+' : ''}{formatCompact(convert(difference), mode)}
-                </Badge>
-              </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14 }}>
+              <span style={{ color: 'var(--color-text-secondary)' }}>Diferencia:</span>
+              <span
+                style={{
+                  fontWeight: 600,
+                  color: isOverBudget ? 'var(--color-danger, #ef4444)' : 'var(--color-success, #22c55e)',
+                }}
+              >
+                {isOverBudget ? '+' : '-'}{formatCompact(convert(Math.abs(difference)), mode)}
+              </span>
             </div>
             {projectedEndDate && (
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-secondary">Fecha estimada de finalización:</span>
-                <span className="text-sm font-medium text-primary">{projectedEndDate}</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14 }}>
+                <span style={{ color: 'var(--color-text-secondary)' }}>
+                  Fecha estimada de finalización:
+                </span>
+                <span style={{ fontWeight: 600, color: 'var(--color-text-primary)' }}>
+                  {projectedEndDate}
+                </span>
               </div>
             )}
-          </Card>
-
-          <div className="mt-4">
-            <Button variant="secondary" size="sm" onClick={handleReset}>
-              Resetear
-            </Button>
           </div>
+
+          {/* Botón resetear */}
+          <button
+            onClick={handleReset}
+            style={{
+              marginTop: 16,
+              background: 'transparent',
+              border: '1px solid #C7D2FE',
+              borderRadius: 'var(--radius-md)',
+              padding: '6px 14px',
+              fontSize: 13,
+              color: 'var(--color-accent)',
+              cursor: 'pointer',
+            }}
+          >
+            Resetear
+          </button>
         </>
       )}
     </div>
