@@ -1,6 +1,14 @@
 import { X, RotateCcw } from 'lucide-react'
-import { WIDGET_REGISTRY } from '@/lib/widgetRegistry'
+import { getWidgetsForSection, type WidgetSection } from '@/lib/widgetRegistry'
 import { Button } from '@/components/ui/Button'
+
+const SECTION_LABELS: Record<WidgetSection, string> = {
+  resumen: 'Resumen',
+  pnl: 'PNL',
+  gastos: 'Gastos',
+  presupuesto: 'Presupuesto',
+  analisis: 'Análisis',
+}
 
 interface WidgetCustomizerProps {
   open: boolean
@@ -8,10 +16,13 @@ interface WidgetCustomizerProps {
   activeWidgets: string[]
   onToggle: (widgetId: string) => void
   onReset: () => void
+  section?: WidgetSection
 }
 
-export function WidgetCustomizer({ open, onClose, activeWidgets, onToggle, onReset }: WidgetCustomizerProps) {
+export function WidgetCustomizer({ open, onClose, activeWidgets, onToggle, onReset, section = 'resumen' }: WidgetCustomizerProps) {
   if (!open) return null
+
+  const widgets = getWidgetsForSection(section)
 
   return (
     <>
@@ -21,7 +32,7 @@ export function WidgetCustomizer({ open, onClose, activeWidgets, onToggle, onRes
       {/* Drawer */}
       <div className="fixed right-0 top-0 bottom-0 w-80 bg-card border-l border-border z-50 flex flex-col shadow-xl">
         <div className="flex items-center justify-between p-4 border-b border-border">
-          <h3 className="text-sm font-heading font-semibold">Personalizar dashboard</h3>
+          <h3 className="text-sm font-heading font-semibold">Personalizar {SECTION_LABELS[section]}</h3>
           <button onClick={onClose} className="p-1 rounded hover:bg-hover text-secondary hover:text-primary">
             <X size={16} />
           </button>
@@ -29,11 +40,11 @@ export function WidgetCustomizer({ open, onClose, activeWidgets, onToggle, onRes
 
         <div className="flex-1 overflow-y-auto p-4">
           <p className="text-xs text-secondary mb-4">
-            Activa o desactiva los widgets que quieras ver en tu dashboard.
+            Activa o desactiva los widgets que quieras ver.
           </p>
 
           <div className="space-y-2">
-            {WIDGET_REGISTRY.map((widget) => {
+            {widgets.map((widget) => {
               const isActive = activeWidgets.includes(widget.id)
               return (
                 <label

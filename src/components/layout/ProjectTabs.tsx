@@ -76,15 +76,17 @@ export function ProjectTabs({ role, cta }: ProjectTabsProps) {
   const tabs = role === 'arquitecto' ? architectTabs : clientTabs
 
   return (
-    <nav className="flex items-center overflow-x-auto scrollbar-hide border-b border-border bg-card/30">
-      {tabs.map((tab) => (
-        <TabLink key={tab.to} {...tab} />
-      ))}
+    <div className="flex items-center border-b border-border bg-card/30">
+      <nav className="flex items-center overflow-x-auto scrollbar-hide flex-1 min-w-0">
+        {tabs.map((tab) => (
+          <TabLink key={tab.to} {...tab} />
+        ))}
+      </nav>
       {cta && (
-        <div className="shrink-0" style={{ marginLeft: 24 }}>
+        <div className="shrink-0 relative" style={{ marginLeft: 24 }}>
           {cta}
         </div>
       )}
-    </nav>
+    </div>
   )
 }

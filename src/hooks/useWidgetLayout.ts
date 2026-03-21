@@ -1,25 +1,27 @@
 import { useState, useCallback } from 'react'
-import { getDefaultLayout, WIDGET_REGISTRY } from '@/lib/widgetRegistry'
+import { getDefaultLayout, getWidgetsForSection, type WidgetSection } from '@/lib/widgetRegistry'
 
-const STORAGE_KEY = (projectId: string) => `hitos-widgets-${projectId}`
+const STORAGE_KEY = (projectId: string, section: WidgetSection) =>
+  `hitos_widgets_${projectId}_${section}`
 
-export function useWidgetLayout(projectId: string) {
+export function useWidgetLayout(projectId: string, section: WidgetSection = 'resumen') {
+  const sectionWidgets = getWidgetsForSection(section)
+
   const [order, setOrder] = useState<string[]>(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY(projectId))
+      const saved = localStorage.getItem(STORAGE_KEY(projectId, section))
       if (saved) {
         const parsed = JSON.parse(saved) as string[]
-        // Filter out widgets that no longer exist in registry
-        return parsed.filter((id) => WIDGET_REGISTRY.some((w) => w.id === id))
+        return parsed.filter((id) => sectionWidgets.some((w) => w.id === id))
       }
     } catch {}
-    return getDefaultLayout()
+    return getDefaultLayout(section)
   })
 
   const persist = useCallback((newOrder: string[]) => {
     setOrder(newOrder)
-    localStorage.setItem(STORAGE_KEY(projectId), JSON.stringify(newOrder))
-  }, [projectId])
+    localStorage.setItem(STORAGE_KEY(projectId, section), JSON.stringify(newOrder))
+  }, [projectId, section])
 
   const reorder = useCallback((activeId: string, overId: string) => {
     setOrder((prev) => {
@@ -29,10 +31,10 @@ export function useWidgetLayout(projectId: string) {
       const copy = [...prev]
       copy.splice(oldIndex, 1)
       copy.splice(newIndex, 0, activeId)
-      localStorage.setItem(STORAGE_KEY(projectId), JSON.stringify(copy))
+      localStorage.setItem(STORAGE_KEY(projectId, section), JSON.stringify(copy))
       return copy
     })
-  }, [projectId])
+  }, [projectId, section])
 
   const toggleWidget = useCallback((widgetId: string) => {
     setOrder((prev) => {
@@ -40,15 +42,15 @@ export function useWidgetLayout(projectId: string) {
       const newOrder = exists
         ? prev.filter((id) => id !== widgetId)
         : [...prev, widgetId]
-      localStorage.setItem(STORAGE_KEY(projectId), JSON.stringify(newOrder))
+      localStorage.setItem(STORAGE_KEY(projectId, section), JSON.stringify(newOrder))
       return newOrder
     })
-  }, [projectId])
+  }, [projectId, section])
 
   const resetLayout = useCallback(() => {
-    const defaultLayout = getDefaultLayout()
+    const defaultLayout = getDefaultLayout(section)
     persist(defaultLayout)
-  }, [persist])
+  }, [persist, section])
 
   return { order, reorder, toggleWidget, resetLayout }
 }

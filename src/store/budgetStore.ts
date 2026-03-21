@@ -7,7 +7,7 @@ interface BudgetState {
   loading: boolean
   fetchItems: (projectId: string) => Promise<void>
   createItem: (data: Omit<BudgetItem, 'id' | 'created_at' | 'updated_at'>) => Promise<void>
-  updateItem: (id: string, data: Partial<Pick<BudgetItem, 'description' | 'unit' | 'quantity' | 'unit_price' | 'total_price' | 'rubro' | 'category'>>) => Promise<void>
+  updateItem: (id: string, data: Partial<Pick<BudgetItem, 'description' | 'unit' | 'quantity' | 'unit_price' | 'total_price' | 'rubro' | 'category' | 'week_number'>>) => Promise<void>
   deleteItem: (id: string) => Promise<void>
 }
 

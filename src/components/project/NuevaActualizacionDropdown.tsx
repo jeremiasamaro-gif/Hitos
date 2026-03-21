@@ -1,5 +1,9 @@
 import { useState, useRef, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { DollarSign, FileText, FileSpreadsheet, File, MessageSquare } from 'lucide-react'
+import { useProjectContext } from '@/contexts/ProjectContext'
+import { GastoRapidoModal } from './GastoRapidoModal'
+import { ComentarioRapidoModal } from './ComentarioRapidoModal'
 
 interface DropdownOption {
   label: string
@@ -41,7 +45,11 @@ const options: (DropdownOption | string)[] = [
 
 export function NuevaActualizacionDropdown() {
   const [open, setOpen] = useState(false)
+  const [showGasto, setShowGasto] = useState(false)
+  const [showComentario, setShowComentario] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
+  const navigate = useNavigate()
+  const { project } = useProjectContext()
 
   useEffect(() => {
     if (!open) return
@@ -65,60 +73,83 @@ export function NuevaActualizacionDropdown() {
   }, [open])
 
   function handleOptionClick(action: string) {
-    console.log(`[NuevaActualizacion] Selected: ${action}`)
     setOpen(false)
+    const base = `/proyecto/${project.id}`
+
+    switch (action) {
+      case 'expense':
+        setShowGasto(true)
+        break
+      case 'manual':
+        navigate(`${base}/presupuesto`, { state: { loadMode: 'manual' } })
+        break
+      case 'import-excel':
+        navigate(`${base}/presupuesto`, { state: { loadMode: 'xlsx' } })
+        break
+      case 'import-csv':
+        navigate(`${base}/presupuesto`, { state: { loadMode: 'csv' } })
+        break
+      case 'comment':
+        setShowComentario(true)
+        break
+    }
   }
 
   return (
-    <div ref={containerRef} className="relative inline-block">
-      <button
-        type="button"
-        onClick={() => setOpen((prev) => !prev)}
-        className="inline-flex items-center gap-1.5 px-4 py-1.5 text-[13px] font-medium text-white transition-colors"
-        style={{
-          background: 'var(--color-accent)',
-          borderRadius: 'var(--radius-md)',
-        }}
-      >
-        Nueva actualizacion
-      </button>
-
-      {open && (
-        <div
-          className="absolute right-0 mt-2 z-50 py-1"
+    <>
+      <div ref={containerRef} className="relative inline-block">
+        <button
+          type="button"
+          onClick={() => setOpen((prev) => !prev)}
+          className="inline-flex items-center gap-1.5 px-4 py-1.5 text-[13px] font-medium text-white transition-colors"
           style={{
-            minWidth: 220,
-            background: 'var(--color-bg-card)',
-            border: '1px solid var(--color-border)',
-            borderRadius: 'var(--radius-lg)',
-            boxShadow: 'var(--shadow-hover, 0 4px 16px rgba(0,0,0,0.15))',
+            background: 'var(--color-accent)',
+            borderRadius: 'var(--radius-md)',
           }}
         >
-          {options.map((opt, i) => {
-            if (typeof opt === 'string') {
+          Nueva actualizacion
+        </button>
+
+        {open && (
+          <div
+            className="absolute right-0 mt-2 z-50 py-1"
+            style={{
+              minWidth: 220,
+              background: 'var(--color-bg-card)',
+              border: '1px solid var(--color-border)',
+              borderRadius: 'var(--radius-lg)',
+              boxShadow: 'var(--shadow-hover, 0 4px 16px rgba(0,0,0,0.15))',
+            }}
+          >
+            {options.map((opt, i) => {
+              if (typeof opt === 'string') {
+                return (
+                  <div
+                    key={`sep-${i}`}
+                    className="my-1"
+                    style={{ borderTop: '1px solid var(--color-border)' }}
+                  />
+                )
+              }
               return (
-                <div
-                  key={`sep-${i}`}
-                  className="my-1"
-                  style={{ borderTop: '1px solid var(--color-border)' }}
-                />
+                <button
+                  key={opt.action}
+                  type="button"
+                  onClick={() => handleOptionClick(opt.action)}
+                  className="flex items-center w-full text-left text-sm transition-colors hover:bg-hover/50"
+                  style={{ padding: '12px 16px', gap: 10 }}
+                >
+                  {opt.icon}
+                  <span>{opt.label}</span>
+                </button>
               )
-            }
-            return (
-              <button
-                key={opt.action}
-                type="button"
-                onClick={() => handleOptionClick(opt.action)}
-                className="flex items-center w-full text-left text-sm transition-colors hover:bg-hover/50"
-                style={{ padding: '12px 16px', gap: 10 }}
-              >
-                {opt.icon}
-                <span>{opt.label}</span>
-              </button>
-            )
-          })}
-        </div>
-      )}
-    </div>
+            })}
+          </div>
+        )}
+      </div>
+
+      <GastoRapidoModal open={showGasto} onClose={() => setShowGasto(false)} />
+      <ComentarioRapidoModal open={showComentario} onClose={() => setShowComentario(false)} />
+    </>
   )
 }

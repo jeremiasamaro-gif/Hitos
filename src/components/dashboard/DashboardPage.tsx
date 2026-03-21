@@ -27,7 +27,7 @@ const WIDGET_COMPONENTS: Record<string, () => JSX.Element> = {
 
 export function DashboardPage() {
   const { project } = useProjectContext()
-  const { order, reorder, toggleWidget, resetLayout } = useWidgetLayout(project.id)
+  const { order, reorder, toggleWidget, resetLayout } = useWidgetLayout(project.id, 'resumen')
   const [customizerOpen, setCustomizerOpen] = useState(false)
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -53,21 +53,28 @@ export function DashboardPage() {
         </div>
       </div>
 
-      <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-        <SortableContext items={order} strategy={verticalListSortingStrategy}>
-          <div className="space-y-4">
-            {order.map((widgetId) => {
-              const Component = WIDGET_COMPONENTS[widgetId]
-              if (!Component) return null
-              return (
-                <WidgetContainer key={widgetId} id={widgetId}>
-                  <Component />
-                </WidgetContainer>
-              )
-            })}
-          </div>
-        </SortableContext>
-      </DndContext>
+      {order.length === 0 ? (
+        <div className="text-center py-12 text-secondary text-sm">
+          <p>Todos los widgets están ocultos.</p>
+          <button onClick={resetLayout} className="text-accent hover:underline mt-1">Restaurar por defecto</button>
+        </div>
+      ) : (
+        <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <SortableContext items={order} strategy={verticalListSortingStrategy}>
+            <div className="space-y-4">
+              {order.map((widgetId) => {
+                const Component = WIDGET_COMPONENTS[widgetId]
+                if (!Component) return null
+                return (
+                  <WidgetContainer key={widgetId} id={widgetId}>
+                    <Component />
+                  </WidgetContainer>
+                )
+              })}
+            </div>
+          </SortableContext>
+        </DndContext>
+      )}
 
       <WidgetCustomizer
         open={customizerOpen}
@@ -75,6 +82,7 @@ export function DashboardPage() {
         activeWidgets={order}
         onToggle={toggleWidget}
         onReset={resetLayout}
+        section="resumen"
       />
     </div>
   )

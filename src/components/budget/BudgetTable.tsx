@@ -42,6 +42,8 @@ export function BudgetTable({ tree, allItems, currencyMode, convert, onUpdate, o
   const [inlineAdd, setInlineAdd] = useState<InlineAddState | null>(null)
   const [notifyItem, setNotifyItem] = useState<BudgetTreeNode | null>(null)
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({})
+  const [editingWeek, setEditingWeek] = useState<Record<string, boolean>>({})
+  const [weekValues, setWeekValues] = useState<Record<string, string>>({})
 
   const toggleCollapse = (id: string) => {
     setCollapsed((prev) => ({ ...prev, [id]: !prev[id] }))
@@ -112,6 +114,23 @@ export function BudgetTable({ tree, allItems, currencyMode, convert, onUpdate, o
     }
   }, [onInlineAdd, projectId, allItems, onAddChild])
 
+  const startWeekEdit = useCallback((itemId: string, currentWeek: number | null) => {
+    setEditingWeek((prev) => ({ ...prev, [itemId]: true }))
+    setWeekValues((prev) => ({ ...prev, [itemId]: String(currentWeek ?? '') }))
+  }, [])
+
+  const handleSaveWeek = useCallback(async (itemId: string) => {
+    const value = parseInt(weekValues[itemId])
+    if (!isNaN(value) && value > 0) {
+      await onUpdate(itemId, { week_number: value })
+    }
+    setEditingWeek((prev) => ({ ...prev, [itemId]: false }))
+  }, [weekValues, onUpdate])
+
+  const cancelWeekEdit = useCallback((itemId: string) => {
+    setEditingWeek((prev) => ({ ...prev, [itemId]: false }))
+  }, [])
+
   const fmt = (ars: number) => formatCurrency(convert(ars), currencyMode)
 
   return (
@@ -159,6 +178,12 @@ export function BudgetTable({ tree, allItems, currencyMode, convert, onUpdate, o
                 onNotify={setNotifyItem}
                 collapsed={collapsed}
                 toggleCollapse={toggleCollapse}
+                editingWeek={editingWeek}
+                weekValues={weekValues}
+                setWeekValues={setWeekValues}
+                startWeekEdit={startWeekEdit}
+                handleSaveWeek={handleSaveWeek}
+                cancelWeekEdit={cancelWeekEdit}
               />
             ))}
           </tbody>
@@ -206,9 +231,15 @@ interface GroupProps {
   onNotify?: (node: BudgetTreeNode) => void
   collapsed: Record<string, boolean>
   toggleCollapse: (id: string) => void
+  editingWeek: Record<string, boolean>
+  weekValues: Record<string, string>
+  setWeekValues: React.Dispatch<React.SetStateAction<Record<string, string>>>
+  startWeekEdit: (itemId: string, currentWeek: number | null) => void
+  handleSaveWeek: (itemId: string) => Promise<void>
+  cancelWeekEdit: (itemId: string) => void
 }
 
-function CategoryGroup({ node, editRow, setEditRow, startEdit, cancelEdit, saveEdit, handleKeyDown, handleDelete, onAddChild, fmt, inlineAdd, setInlineAdd, onInlineAdd, projectId, allItems, onNotify, collapsed, toggleCollapse }: GroupProps) {
+function CategoryGroup({ node, editRow, setEditRow, startEdit, cancelEdit, saveEdit, handleKeyDown, handleDelete, onAddChild, fmt, inlineAdd, setInlineAdd, onInlineAdd, projectId, allItems, onNotify, collapsed, toggleCollapse, editingWeek, weekValues, setWeekValues, startWeekEdit, handleSaveWeek, cancelWeekEdit }: GroupProps) {
   const isEditing = editRow?.id === node.item.id
   const isCategory = node.level === 0
   const isSub = node.level === 1
@@ -261,11 +292,41 @@ function CategoryGroup({ node, editRow, setEditRow, startEdit, cancelEdit, saveE
           ) : (
             <span className="flex items-center gap-2 group/desc">
               {node.item.description}
-              {/* Week badge for subcategories */}
-              {isSub && node.item.week_number != null && (
-                <span className="bg-[#EEF2FF] text-[var(--color-accent)] rounded-full text-[11px] px-2 py-0.5 font-normal shrink-0">
-                  Semana {node.item.week_number}
-                </span>
+              {/* Week badge for subcategories and items (level 1+) */}
+              {(isSub || node.level === 2) && (
+                editingWeek[node.item.id] ? (
+                  <input
+                    type="number"
+                    min="1"
+                    value={weekValues[node.item.id] ?? ''}
+                    onChange={(e) => setWeekValues((prev) => ({ ...prev, [node.item.id]: e.target.value }))}
+                    onBlur={() => handleSaveWeek(node.item.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') handleSaveWeek(node.item.id)
+                      if (e.key === 'Escape') cancelWeekEdit(node.item.id)
+                      e.stopPropagation()
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                    autoFocus
+                    className="bg-app border border-border rounded px-2 py-0.5 text-[11px] w-[60px] shrink-0"
+                  />
+                ) : node.item.week_number != null ? (
+                  <span
+                    className="bg-[#EEF2FF] text-[var(--color-accent)] rounded-full text-[11px] px-2 py-0.5 font-normal shrink-0 cursor-pointer hover:bg-[#E0E7FF] transition-colors"
+                    onClick={(e) => { e.stopPropagation(); startWeekEdit(node.item.id, node.item.week_number) }}
+                    title="Click para editar semana"
+                  >
+                    Semana {node.item.week_number}
+                  </span>
+                ) : (
+                  <span
+                    className="text-[11px] text-secondary/60 hover:text-accent cursor-pointer shrink-0 transition-colors"
+                    onClick={(e) => { e.stopPropagation(); startWeekEdit(node.item.id, null) }}
+                    title="Click para asignar semana"
+                  >
+                    —
+                  </span>
+                )
               )}
               {/* Notify button for subcategories */}
               {isSub && onNotify && (
@@ -361,6 +422,12 @@ function CategoryGroup({ node, editRow, setEditRow, startEdit, cancelEdit, saveE
           onNotify={onNotify}
           collapsed={collapsed}
           toggleCollapse={toggleCollapse}
+          editingWeek={editingWeek}
+          weekValues={weekValues}
+          setWeekValues={setWeekValues}
+          startWeekEdit={startWeekEdit}
+          handleSaveWeek={handleSaveWeek}
+          cancelWeekEdit={cancelWeekEdit}
         />
       ))}
 
