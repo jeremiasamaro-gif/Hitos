@@ -5,63 +5,40 @@ import { useProjectContext } from '@/contexts/ProjectContext'
 import { GastoRapidoModal } from './GastoRapidoModal'
 import { ComentarioRapidoModal } from './ComentarioRapidoModal'
 
-interface DropdownOption {
-  label: string
-  icon: React.ReactNode
-  action: string
+const optionStyle: React.CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: 10,
+  width: '100%',
+  padding: '9px 12px',
+  background: 'transparent',
+  border: 'none',
+  borderRadius: 'var(--radius-md)',
+  fontSize: 14,
+  color: 'var(--color-text-primary)',
+  cursor: 'pointer',
+  textAlign: 'left' as const,
 }
 
-const SEPARATOR = '__sep__'
-
-const options: (DropdownOption | string)[] = [
-  {
-    label: 'Registrar gasto rapido',
-    icon: <DollarSign size={16} className="text-secondary shrink-0" />,
-    action: 'expense',
-  },
-  SEPARATOR,
-  {
-    label: 'Carga manual',
-    icon: <FileText size={16} className="text-secondary shrink-0" />,
-    action: 'manual',
-  },
-  {
-    label: 'Importar Excel',
-    icon: <FileSpreadsheet size={16} className="text-secondary shrink-0" />,
-    action: 'import-excel',
-  },
-  {
-    label: 'Importar CSV',
-    icon: <File size={16} className="text-secondary shrink-0" />,
-    action: 'import-csv',
-  },
-  SEPARATOR,
-  {
-    label: 'Agregar nota / comentario',
-    icon: <MessageSquare size={16} className="text-secondary shrink-0" />,
-    action: 'comment',
-  },
-]
-
 export function NuevaActualizacionDropdown() {
-  const [open, setOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
   const [showGasto, setShowGasto] = useState(false)
   const [showComentario, setShowComentario] = useState(false)
-  const containerRef = useRef<HTMLDivElement>(null)
+  const ref = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
   const { project } = useProjectContext()
 
   useEffect(() => {
-    if (!open) return
+    if (!isOpen) return
 
     function handleClickOutside(e: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-        setOpen(false)
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setIsOpen(false)
       }
     }
 
     function handleEscape(e: KeyboardEvent) {
-      if (e.key === 'Escape') setOpen(false)
+      if (e.key === 'Escape') setIsOpen(false)
     }
 
     document.addEventListener('mousedown', handleClickOutside)
@@ -70,80 +47,137 @@ export function NuevaActualizacionDropdown() {
       document.removeEventListener('mousedown', handleClickOutside)
       document.removeEventListener('keydown', handleEscape)
     }
-  }, [open])
+  }, [isOpen])
 
-  function handleOptionClick(action: string) {
-    setOpen(false)
-    const base = `/proyecto/${project.id}`
+  const base = `/proyecto/${project.id}`
 
-    switch (action) {
-      case 'expense':
-        setShowGasto(true)
-        break
-      case 'manual':
-        navigate(`${base}/presupuesto`, { state: { loadMode: 'manual' } })
-        break
-      case 'import-excel':
-        navigate(`${base}/presupuesto`, { state: { loadMode: 'xlsx' } })
-        break
-      case 'import-csv':
-        navigate(`${base}/presupuesto`, { state: { loadMode: 'csv' } })
-        break
-      case 'comment':
-        setShowComentario(true)
-        break
-    }
+  function onGastoRapido() {
+    setIsOpen(false)
+    setShowGasto(true)
+  }
+
+  function onCargaManual() {
+    setIsOpen(false)
+    navigate(`${base}/presupuesto`, { state: { loadMode: 'manual' } })
+  }
+
+  function onImportExcel() {
+    setIsOpen(false)
+    navigate(`${base}/presupuesto`, { state: { loadMode: 'xlsx' } })
+  }
+
+  function onImportCSV() {
+    setIsOpen(false)
+    navigate(`${base}/presupuesto`, { state: { loadMode: 'csv' } })
+  }
+
+  function onComentario() {
+    setIsOpen(false)
+    setShowComentario(true)
   }
 
   return (
     <>
-      <div ref={containerRef} className="relative inline-block">
+      <div ref={ref} style={{ position: 'relative', display: 'inline-block' }}>
         <button
           type="button"
-          onClick={() => setOpen((prev) => !prev)}
-          className="inline-flex items-center gap-1.5 px-4 py-1.5 text-[13px] font-medium text-white transition-colors"
+          onClick={() => setIsOpen(!isOpen)}
           style={{
             background: 'var(--color-accent)',
+            color: '#fff',
+            border: 'none',
             borderRadius: 'var(--radius-md)',
+            padding: '8px 16px',
+            fontSize: 13,
+            fontWeight: 500,
+            cursor: 'pointer',
           }}
         >
-          Nueva actualizacion
+          Nueva actualización
         </button>
 
-        {open && (
+        {isOpen && (
           <div
-            className="absolute right-0 mt-2 z-50 py-1"
             style={{
-              minWidth: 220,
+              position: 'absolute',
+              top: 'calc(100% + 8px)',
+              right: 0,
+              left: 'auto',
+              zIndex: 100,
               background: 'var(--color-bg-card)',
               border: '1px solid var(--color-border)',
               borderRadius: 'var(--radius-lg)',
               boxShadow: 'var(--shadow-hover, 0 4px 16px rgba(0,0,0,0.15))',
+              minWidth: 220,
+              padding: 6,
+              overflow: 'visible',
             }}
           >
-            {options.map((opt, i) => {
-              if (typeof opt === 'string') {
-                return (
-                  <div
-                    key={`sep-${i}`}
-                    className="my-1"
-                    style={{ borderTop: '1px solid var(--color-border)' }}
-                  />
-                )
-              }
-              return (
-                <button
-                  key={opt.action}
-                  type="button"
-                  onClick={() => handleOptionClick(opt.action)}
-                  className="flex items-center w-full text-left text-sm transition-colors hover:bg-hover/50"
-                  style={{ padding: '12px 16px', gap: 10 }}
-                >
-                  {opt.icon}
-                  <span>{opt.label}</span>
-                </button>
-              )
-            })}
+            {/* Registrar gasto rápido */}
+            <button
+              type="button"
+              onClick={onGastoRapido}
+              style={optionStyle}
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--color-bg-row-hover, rgba(0,0,0,0.04))' }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
+            >
+              <DollarSign size={16} style={{ color: 'var(--color-text-secondary)' }} />
+              <span>Registrar gasto rápido</span>
+            </button>
+
+            {/* Separador */}
+            <div style={{ borderTop: '1px solid var(--color-border)', margin: '4px 0' }} />
+
+            {/* Carga manual */}
+            <button
+              type="button"
+              onClick={onCargaManual}
+              style={optionStyle}
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--color-bg-row-hover, rgba(0,0,0,0.04))' }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
+            >
+              <FileText size={16} style={{ color: 'var(--color-text-secondary)' }} />
+              <span>Carga manual</span>
+            </button>
+
+            {/* Importar Excel */}
+            <button
+              type="button"
+              onClick={onImportExcel}
+              style={optionStyle}
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--color-bg-row-hover, rgba(0,0,0,0.04))' }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
+            >
+              <FileSpreadsheet size={16} style={{ color: 'var(--color-text-secondary)' }} />
+              <span>Importar Excel</span>
+            </button>
+
+            {/* Importar CSV */}
+            <button
+              type="button"
+              onClick={onImportCSV}
+              style={optionStyle}
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--color-bg-row-hover, rgba(0,0,0,0.04))' }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
+            >
+              <File size={16} style={{ color: 'var(--color-text-secondary)' }} />
+              <span>Importar CSV</span>
+            </button>
+
+            {/* Separador */}
+            <div style={{ borderTop: '1px solid var(--color-border)', margin: '4px 0' }} />
+
+            {/* Agregar nota / comentario */}
+            <button
+              type="button"
+              onClick={onComentario}
+              style={optionStyle}
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--color-bg-row-hover, rgba(0,0,0,0.04))' }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
+            >
+              <MessageSquare size={16} style={{ color: 'var(--color-text-secondary)' }} />
+              <span>Agregar nota / comentario</span>
+            </button>
           </div>
         )}
       </div>
