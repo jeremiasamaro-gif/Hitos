@@ -4,6 +4,7 @@ import { useAuthStore } from '@/store/authStore'
 import { ProtectedRoute } from '@/components/layout/ProtectedRoute'
 import { ProjectProvider } from '@/contexts/ProjectContext'
 import { ProjectLayout } from '@/components/layout/ProjectLayout'
+import { ClientProjectLayout } from '@/components/client/ClientProjectLayout'
 import { AuthPage } from '@/pages/AuthPage'
 import { ProjectsPage } from '@/pages/ProjectsPage'
 import { DashboardPage } from '@/components/dashboard/DashboardPage'
@@ -15,13 +16,23 @@ import { MisPagosPage } from '@/components/payments/MisPagosPage'
 import { ConfigPage } from '@/components/config/ConfigPage'
 import { ProjectPresupuesto } from '@/components/project/ProjectPresupuesto'
 import { ProfilePage } from '@/pages/ProfilePage'
-// ConfiguracionPage removed — merged into ProfilePage tabs
+import { ClientResumen } from '@/components/client/ClientResumen'
+import { ClientPresupuesto } from '@/components/client/ClientPresupuesto'
+import { ClientPNL } from '@/components/client/ClientPNL'
+import { ClientAnalisis } from '@/components/client/ClientAnalisis'
 import { LandingPage } from '@/pages/LandingPage'
 
 // Redirect from old /projects/:id/* to new /proyecto/:id/*
 function ProjectRedirect() {
   const { id, '*': rest } = useParams()
   return <Navigate to={`/proyecto/${id}/${rest || 'resumen'}`} replace />
+}
+
+// Role-based redirect after login
+function RoleRedirect() {
+  const { user } = useAuthStore()
+  if (!user) return <Navigate to="/auth" replace />
+  return <Navigate to="/projects" replace />
 }
 
 export default function App() {
@@ -44,7 +55,7 @@ export default function App() {
           </ProtectedRoute>
         }
       />
-      {/* New Spanish routes */}
+      {/* Architect project routes */}
       <Route
         path="/proyecto/:id"
         element={
@@ -65,6 +76,23 @@ export default function App() {
         <Route path="mis-pagos" element={<MisPagosPage />} />
         <Route path="config" element={<ConfigPage />} />
       </Route>
+      {/* Client project routes */}
+      <Route
+        path="/cliente/proyecto/:id"
+        element={
+          <ProtectedRoute>
+            <ProjectProvider>
+              <ClientProjectLayout />
+            </ProjectProvider>
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<Navigate to="resumen" replace />} />
+        <Route path="resumen" element={<ClientResumen />} />
+        <Route path="presupuesto" element={<ClientPresupuesto />} />
+        <Route path="pnl" element={<ClientPNL />} />
+        <Route path="analisis" element={<ClientAnalisis />} />
+      </Route>
       {/* Profile */}
       <Route
         path="/perfil"
@@ -79,6 +107,8 @@ export default function App() {
         path="/configuracion"
         element={<Navigate to="/perfil" state={{ tab: 'configuracion' }} replace />}
       />
+      {/* Role-based redirect */}
+      <Route path="/dashboard" element={<RoleRedirect />} />
       {/* Redirect old routes */}
       <Route path="/projects/:id/*" element={<ProjectRedirect />} />
       <Route path="*" element={<Navigate to="/" replace />} />

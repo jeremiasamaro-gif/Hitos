@@ -33,7 +33,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ loading: true, error: null })
     const user = mockUsers.find((u) => u.email === email)
     if (!user) {
-      set({ loading: false, error: 'Usuario no encontrado. Usá arq@test.com o cliente@test.com' })
+      set({ loading: false, error: 'Usuario no encontrado. Usá arq@test.com o cliente@hitos.com' })
       throw new Error('User not found')
     }
     localStorage.setItem('hitos-mock-user', email)

@@ -46,7 +46,7 @@ begin
   -- ============================================
   insert into public.users (id, email, name, role) values
     (v_arq_id, 'arq@test.com', 'Arquitecto Test', 'arquitecto'),
-    (v_cli_id, 'cliente@test.com', 'Cliente Test', 'cliente');
+    (v_cli_id, 'cliente@hitos.com', 'Cliente Test', 'cliente');
 
   -- ============================================
   -- PROJECT: La Alejada

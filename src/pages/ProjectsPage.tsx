@@ -20,19 +20,19 @@ export function ProjectsPage() {
   useEffect(() => {
     let mounted = true
     setLoading(true)
-    getProjectsWithStats().then((data) => {
+    getProjectsWithStats(user?.id, user?.role).then((data) => {
       if (mounted) {
         setProjects(data)
         setLoading(false)
       }
     })
     return () => { mounted = false }
-  }, [])
+  }, [user])
 
   const handleClose = () => {
     setShowCreate(false)
     // Refresh stats after potential creation
-    getProjectsWithStats().then(setProjects)
+    getProjectsWithStats(user?.id, user?.role).then(setProjects)
   }
 
   return (

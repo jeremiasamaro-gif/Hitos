@@ -82,13 +82,20 @@ export function ProjectTabs({ role, cta }: ProjectTabsProps) {
         alignItems: 'center',
         borderBottom: '1px solid var(--color-border)',
         background: 'var(--color-bg-card, transparent)',
-        overflowX: 'auto',
       }}
-      className="scrollbar-hide"
     >
-      {tabs.map((tab) => (
-        <TabLink key={tab.to} {...tab} />
-      ))}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          overflowX: 'auto',
+        }}
+        className="scrollbar-hide"
+      >
+        {tabs.map((tab) => (
+          <TabLink key={tab.to} {...tab} />
+        ))}
+      </div>
       {cta && (
         <div style={{ marginLeft: 24, marginBottom: 2, position: 'relative', flexShrink: 0 }}>
           {cta}

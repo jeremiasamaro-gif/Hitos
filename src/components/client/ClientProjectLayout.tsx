@@ -1,15 +1,26 @@
-import { Outlet, useNavigate } from 'react-router-dom'
-import { ArrowLeft } from 'lucide-react'
+import { Outlet, NavLink, useNavigate } from 'react-router-dom'
+import { ArrowLeft, LayoutDashboard, ClipboardList, Table2, TrendingUp } from 'lucide-react'
 import { useAuthStore } from '@/store/authStore'
 import { useProjectContext } from '@/contexts/ProjectContext'
 import { CurrencySelector } from '@/components/ui/CurrencySelector'
 import { Badge } from '@/components/ui/Badge'
 import { UserMenu } from '@/components/ui/UserMenu'
-import { ProjectTabs } from './ProjectTabs'
-import { NuevaActualizacionDropdown } from '@/components/project/NuevaActualizacionDropdown'
 
-export function ProjectLayout() {
-  const { project, userRole, globalProgress } = useProjectContext()
+interface Tab {
+  to: string
+  label: string
+  icon: React.ReactNode
+}
+
+const CLIENT_TABS: Tab[] = [
+  { to: 'resumen', label: 'Resumen', icon: <LayoutDashboard size={16} /> },
+  { to: 'presupuesto', label: 'Presupuesto', icon: <ClipboardList size={16} /> },
+  { to: 'pnl', label: 'PNL', icon: <Table2 size={16} /> },
+  { to: 'analisis', label: 'Análisis', icon: <TrendingUp size={16} /> },
+]
+
+export function ClientProjectLayout() {
+  const { project, globalProgress } = useProjectContext()
   const { user } = useAuthStore()
   const navigate = useNavigate()
 
@@ -17,7 +28,6 @@ export function ProjectLayout() {
 
   return (
     <div className="min-h-screen bg-app text-primary">
-      {/* Header */}
       <header className="border-b border-border bg-card/50 backdrop-blur-sm" style={{ position: 'relative', zIndex: 10 }}>
         <div className="flex items-center justify-between px-4 py-3">
           <div className="flex items-center gap-3 min-w-0">
@@ -43,9 +53,7 @@ export function ProjectLayout() {
             <div className="hidden sm:block">
               <CurrencySelector />
             </div>
-            <Badge variant={userRole === 'arquitecto' ? 'accent' : 'default'}>
-              {userRole === 'arquitecto' ? 'Arquitecto' : 'Cliente'}
-            </Badge>
+            <Badge variant="default">Cliente</Badge>
             {user && (
               <UserMenu
                 userName={user.name}
@@ -62,14 +70,44 @@ export function ProjectLayout() {
           <CurrencySelector />
         </div>
 
-        {/* Tabs + CTA inline */}
-        <ProjectTabs
-          role={userRole}
-          cta={userRole === 'arquitecto' ? <NuevaActualizacionDropdown /> : undefined}
-        />
+        {/* Client tabs — NO "Nueva actualización" button */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            borderBottom: '1px solid var(--color-border)',
+            background: 'var(--color-bg-card, transparent)',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              overflowX: 'auto',
+            }}
+            className="scrollbar-hide"
+          >
+            {CLIENT_TABS.map((tab) => (
+              <NavLink
+                key={tab.to}
+                to={tab.to}
+                end
+                className={({ isActive }) =>
+                  `flex items-center gap-1.5 px-3 py-2.5 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
+                    isActive
+                      ? 'border-accent text-accent'
+                      : 'border-transparent text-secondary hover:text-primary'
+                  }`
+                }
+              >
+                {tab.icon}
+                {tab.label}
+              </NavLink>
+            ))}
+          </div>
+        </div>
       </header>
 
-      {/* Content */}
       <main className="p-4 lg:p-6 max-w-7xl mx-auto">
         <Outlet />
       </main>

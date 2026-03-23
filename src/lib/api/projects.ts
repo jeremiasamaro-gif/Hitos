@@ -1,5 +1,5 @@
 import { supabase, type Project, type BudgetItem, type Expense } from '../supabase'
-import { mockProjects, mockBudgetItems, mockExpenses } from '@/store/mockData'
+import { mockProjects, mockBudgetItems, mockExpenses, mockProjectMembers } from '@/store/mockData'
 import { getWeekNumber } from '@/lib/formatUtils'
 
 export type ProjectStatus = 'en-curso' | 'con-alertas' | 'finalizado'
@@ -97,12 +97,21 @@ function computeStats(project: Project, allItems: BudgetItem[], allExpenses: Exp
   }
 }
 
-export async function getProjectsWithStats(architectId?: string): Promise<ProjectWithStats[]> {
+export async function getProjectsWithStats(userId?: string, role?: 'arquitecto' | 'cliente'): Promise<ProjectWithStats[]> {
   // Use mock data directly (in production this would use Supabase joins)
   await new Promise((r) => setTimeout(r, 200))
-  const projects = architectId
-    ? mockProjects.filter((p) => p.architect_id === architectId)
-    : mockProjects
+  let projects: Project[]
+  if (role === 'cliente' && userId) {
+    // Clients see only projects they're members of
+    const memberProjectIds = mockProjectMembers
+      .filter((m) => m.user_id === userId && m.role === 'cliente')
+      .map((m) => m.project_id)
+    projects = mockProjects.filter((p) => memberProjectIds.includes(p.id))
+  } else if (userId) {
+    projects = mockProjects.filter((p) => p.architect_id === userId)
+  } else {
+    projects = mockProjects
+  }
   return projects.map((p) => computeStats(p, mockBudgetItems, mockExpenses))
 }
 

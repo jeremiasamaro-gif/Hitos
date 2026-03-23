@@ -107,74 +107,46 @@ export function NuevaActualizacionDropdown() {
               background: 'var(--color-bg-card)',
               border: '1px solid var(--color-border)',
               borderRadius: 'var(--radius-lg)',
-              boxShadow: 'var(--shadow-hover, 0 4px 16px rgba(0,0,0,0.15))',
+              boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
               minWidth: 220,
               padding: 6,
-              overflow: 'visible',
             }}
           >
-            {/* Registrar gasto rápido */}
-            <button
-              type="button"
-              onClick={onGastoRapido}
-              style={optionStyle}
+            <button type="button" onClick={onGastoRapido} style={optionStyle}
               onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--color-bg-row-hover, rgba(0,0,0,0.04))' }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
-            >
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}>
               <DollarSign size={16} style={{ color: 'var(--color-text-secondary)' }} />
               <span>Registrar gasto rápido</span>
             </button>
 
-            {/* Separador */}
             <div style={{ borderTop: '1px solid var(--color-border)', margin: '4px 0' }} />
 
-            {/* Carga manual */}
-            <button
-              type="button"
-              onClick={onCargaManual}
-              style={optionStyle}
+            <button type="button" onClick={onCargaManual} style={optionStyle}
               onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--color-bg-row-hover, rgba(0,0,0,0.04))' }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
-            >
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}>
               <FileText size={16} style={{ color: 'var(--color-text-secondary)' }} />
               <span>Carga manual</span>
             </button>
 
-            {/* Importar Excel */}
-            <button
-              type="button"
-              onClick={onImportExcel}
-              style={optionStyle}
+            <button type="button" onClick={onImportExcel} style={optionStyle}
               onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--color-bg-row-hover, rgba(0,0,0,0.04))' }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
-            >
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}>
               <FileSpreadsheet size={16} style={{ color: 'var(--color-text-secondary)' }} />
               <span>Importar Excel</span>
             </button>
 
-            {/* Importar CSV */}
-            <button
-              type="button"
-              onClick={onImportCSV}
-              style={optionStyle}
+            <button type="button" onClick={onImportCSV} style={optionStyle}
               onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--color-bg-row-hover, rgba(0,0,0,0.04))' }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
-            >
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}>
               <File size={16} style={{ color: 'var(--color-text-secondary)' }} />
               <span>Importar CSV</span>
             </button>
 
-            {/* Separador */}
             <div style={{ borderTop: '1px solid var(--color-border)', margin: '4px 0' }} />
 
-            {/* Agregar nota / comentario */}
-            <button
-              type="button"
-              onClick={onComentario}
-              style={optionStyle}
+            <button type="button" onClick={onComentario} style={optionStyle}
               onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--color-bg-row-hover, rgba(0,0,0,0.04))' }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
-            >
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}>
               <MessageSquare size={16} style={{ color: 'var(--color-text-secondary)' }} />
               <span>Agregar nota / comentario</span>
             </button>

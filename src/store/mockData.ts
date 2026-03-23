@@ -20,7 +20,7 @@ export const mockUsers: User[] = [
   },
   {
     id: '00000000-0000-0000-0000-000000000002',
-    email: 'cliente@test.com',
+    email: 'cliente@hitos.com',
     name: 'Cliente Test',
     role: 'cliente',
     honorario_direccion: 0,

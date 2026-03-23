@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { MapPin, Calendar } from 'lucide-react'
+import { useAuthStore } from '@/store/authStore'
 import type { ProjectWithStats, RubroExcedidoDetalle } from '@/lib/api/projects'
 import { formatCompact } from '@/lib/formatUtils'
 import { formatDate } from '@/utils/formatters'
@@ -110,6 +111,8 @@ interface ProjectCardNewProps {
 
 export function ProjectCardNew({ project }: ProjectCardNewProps) {
   const navigate = useNavigate()
+  const { user } = useAuthStore()
+  const isClient = user?.role === 'cliente'
   const [animatedPct, setAnimatedPct] = useState(0)
 
   useEffect(() => {
@@ -121,7 +124,7 @@ export function ProjectCardNew({ project }: ProjectCardNewProps) {
 
   return (
     <div
-      onClick={() => navigate(`/proyecto/${project.id}/resumen`)}
+      onClick={() => navigate(isClient ? `/cliente/proyecto/${project.id}/resumen` : `/proyecto/${project.id}/resumen`)}
       className="bg-card border border-border rounded-xl shadow-card hover:shadow-card-hover hover:border-border-strong cursor-pointer transition-all duration-150 ease-in-out p-5 min-h-[180px] flex flex-col"
     >
       {/* Header */}
