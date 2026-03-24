@@ -13,7 +13,10 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 // TypeScript types matching schema.sql
 // ============================================
 
-export type UserRole = 'arquitecto' | 'cliente'
+export type UserRole = 'arquitecto' | 'cliente' | 'admin'
+export type UserEstado = 'activo' | 'suspendido' | 'trial' | 'churned' | 'vip'
+export type UserPlan = 'gratis' | 'seguimiento' | 'control' | 'pro'
+export type PipelineEstado = 'registrado' | 'activo' | 'con_proyecto' | 'pago' | 'churned'
 export type ProjectMemberRole = 'arquitecto' | 'cliente'
 
 export interface User {
@@ -27,8 +30,39 @@ export interface User {
   firma_en_pdf: boolean
   logo_url: string | null
   last_sign_in: string | null
+  estado: UserEstado
+  plan: UserPlan
+  plan_vence_at: string | null
+  notas_admin: string | null
+  responsable_seguimiento: string | null
+  pipeline_estado: PipelineEstado
   created_at: string
   updated_at: string
+}
+
+export interface AdminUser {
+  id: string
+  email: string
+  nombre: string
+  created_at: string
+}
+
+export interface ActivityLog {
+  id: string
+  user_id: string
+  action: string
+  details: Record<string, unknown> | null
+  created_at: string
+}
+
+export interface FeatureFlag {
+  id: string
+  nombre: string
+  descripcion: string | null
+  activo_global: boolean
+  activo_para_usuarios: string[]
+  activo_para_planes: string[]
+  created_at: string
 }
 
 export type ObraType = 'Obra nueva' | 'Refacción' | 'Ampliación' | 'Remodelación' | 'Otro'

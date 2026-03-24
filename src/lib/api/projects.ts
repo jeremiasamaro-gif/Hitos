@@ -97,7 +97,7 @@ function computeStats(project: Project, allItems: BudgetItem[], allExpenses: Exp
   }
 }
 
-export async function getProjectsWithStats(userId?: string, role?: 'arquitecto' | 'cliente'): Promise<ProjectWithStats[]> {
+export async function getProjectsWithStats(userId?: string, role?: string): Promise<ProjectWithStats[]> {
   // Use mock data directly (in production this would use Supabase joins)
   await new Promise((r) => setTimeout(r, 200))
   let projects: Project[]

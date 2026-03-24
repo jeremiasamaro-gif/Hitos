@@ -1,4 +1,4 @@
-import type { User, Project, ProjectMember, BudgetItem, Expense, Comment, ExchangeRate, ClientPayment, Provider } from '@/lib/supabase'
+import type { User, Project, ProjectMember, BudgetItem, Expense, Comment, ExchangeRate, ClientPayment, Provider, AdminUser, ActivityLog, FeatureFlag } from '@/lib/supabase'
 
 // ============================================
 // USERS
@@ -15,6 +15,12 @@ export const mockUsers: User[] = [
     firma_en_pdf: false,
     logo_url: null,
     last_sign_in: '2026-03-20T08:30:00Z',
+    estado: 'activo',
+    plan: 'control',
+    plan_vence_at: '2026-12-31T23:59:59Z',
+    notas_admin: 'Arquitecto principal para testing',
+    responsable_seguimiento: 'Admin Hitos',
+    pipeline_estado: 'pago',
     created_at: '2026-01-01T10:00:00Z',
     updated_at: '2026-01-01T10:00:00Z',
   },
@@ -29,6 +35,12 @@ export const mockUsers: User[] = [
     firma_en_pdf: false,
     logo_url: null,
     last_sign_in: '2026-03-19T14:20:00Z',
+    estado: 'activo',
+    plan: 'gratis',
+    plan_vence_at: null,
+    notas_admin: null,
+    responsable_seguimiento: null,
+    pipeline_estado: 'con_proyecto',
     created_at: '2026-01-15T10:00:00Z',
     updated_at: '2026-01-15T10:00:00Z',
   },
@@ -43,6 +55,12 @@ export const mockUsers: User[] = [
     firma_en_pdf: false,
     logo_url: null,
     last_sign_in: '2026-03-18T09:15:00Z',
+    estado: 'trial',
+    plan: 'seguimiento',
+    plan_vence_at: '2026-04-01T23:59:59Z',
+    notas_admin: 'Interesada en plan Pro',
+    responsable_seguimiento: 'Admin Hitos',
+    pipeline_estado: 'activo',
     created_at: '2026-02-01T10:00:00Z',
     updated_at: '2026-02-01T10:00:00Z',
   },
@@ -57,6 +75,12 @@ export const mockUsers: User[] = [
     firma_en_pdf: false,
     logo_url: null,
     last_sign_in: '2026-03-15T16:45:00Z',
+    estado: 'vip',
+    plan: 'pro',
+    plan_vence_at: '2027-03-15T23:59:59Z',
+    notas_admin: 'Cliente VIP — renovó anual',
+    responsable_seguimiento: 'Admin Hitos',
+    pipeline_estado: 'pago',
     created_at: '2026-02-10T10:00:00Z',
     updated_at: '2026-02-10T10:00:00Z',
   },
@@ -71,6 +95,12 @@ export const mockUsers: User[] = [
     firma_en_pdf: false,
     logo_url: null,
     last_sign_in: '2026-03-10T11:00:00Z',
+    estado: 'suspendido',
+    plan: 'gratis',
+    plan_vence_at: null,
+    notas_admin: 'Cuenta suspendida por inactividad',
+    responsable_seguimiento: null,
+    pipeline_estado: 'churned',
     created_at: '2026-02-15T10:00:00Z',
     updated_at: '2026-02-15T10:00:00Z',
   },
@@ -85,9 +115,84 @@ export const mockUsers: User[] = [
     firma_en_pdf: false,
     logo_url: null,
     last_sign_in: '2026-03-05T20:30:00Z',
+    estado: 'activo',
+    plan: 'seguimiento',
+    plan_vence_at: '2026-06-01T23:59:59Z',
+    notas_admin: null,
+    responsable_seguimiento: null,
+    pipeline_estado: 'con_proyecto',
     created_at: '2026-03-01T10:00:00Z',
     updated_at: '2026-03-01T10:00:00Z',
   },
+  {
+    id: '00000000-0000-0000-0000-000000000099',
+    email: 'admin@hitos.com',
+    name: 'Admin Hitos',
+    role: 'admin',
+    honorario_direccion: 0,
+    honorario_proyecto: 0,
+    firma_url: null,
+    firma_en_pdf: false,
+    logo_url: null,
+    last_sign_in: '2026-03-23T08:00:00Z',
+    estado: 'activo',
+    plan: 'pro',
+    plan_vence_at: null,
+    notas_admin: null,
+    responsable_seguimiento: null,
+    pipeline_estado: 'pago',
+    created_at: '2026-01-01T00:00:00Z',
+    updated_at: '2026-01-01T00:00:00Z',
+  },
+]
+
+// ============================================
+// ADMIN USERS
+// ============================================
+export const mockAdminUsers: AdminUser[] = [
+  {
+    id: '00000000-0000-0000-0000-000000000099',
+    email: 'admin@hitos.com',
+    nombre: 'Admin Hitos',
+    created_at: '2026-01-01T00:00:00Z',
+  },
+]
+
+// ============================================
+// ACTIVITY LOGS
+// ============================================
+export const mockActivityLogs: ActivityLog[] = [
+  { id: 'al-1', user_id: '00000000-0000-0000-0000-000000000001', action: 'create_project', details: { project: 'La Alejada' }, created_at: '2026-01-10T10:00:00Z' },
+  { id: 'al-2', user_id: '00000000-0000-0000-0000-000000000001', action: 'create_expense', details: { amount: 4200000, provider: 'Excavaciones del Sur' }, created_at: '2026-01-15T10:00:00Z' },
+  { id: 'al-3', user_id: '00000000-0000-0000-0000-000000000001', action: 'create_expense', details: { amount: 2100000, provider: 'Excavaciones del Sur' }, created_at: '2026-01-22T10:00:00Z' },
+  { id: 'al-4', user_id: '00000000-0000-0000-0000-000000000002', action: 'create_comment', details: { text: '¿Cuándo empiezan con la instalación de gas?' }, created_at: '2026-03-05T10:00:00Z' },
+  { id: 'al-5', user_id: '00000000-0000-0000-0000-000000000001', action: 'export_pdf', details: { type: 'presupuesto' }, created_at: '2026-03-10T14:00:00Z' },
+  { id: 'al-6', user_id: '00000000-0000-0000-0000-000000000001', action: 'create_expense', details: { amount: 9500000, provider: 'Hormigonera Central' }, created_at: '2026-02-03T10:00:00Z' },
+  { id: 'al-7', user_id: '00000000-0000-0000-0000-000000000001', action: 'invite_client', details: { email: 'cliente@hitos.com' }, created_at: '2026-01-10T11:00:00Z' },
+  { id: 'al-8', user_id: '00000000-0000-0000-0000-000000000004', action: 'create_comment', details: { text: 'Revisé el presupuesto' }, created_at: '2026-03-16T10:00:00Z' },
+  { id: 'al-9', user_id: '00000000-0000-0000-0000-000000000001', action: 'create_project', details: { project: 'Proyecto B' }, created_at: '2026-02-01T10:00:00Z' },
+  { id: 'al-10', user_id: '00000000-0000-0000-0000-000000000003', action: 'create_comment', details: { text: 'Todo bien con las fundaciones' }, created_at: '2026-03-18T09:00:00Z' },
+  { id: 'al-11', user_id: '00000000-0000-0000-0000-000000000001', action: 'export_pdf', details: { type: 'pnl' }, created_at: '2026-03-20T08:00:00Z' },
+  { id: 'al-12', user_id: '00000000-0000-0000-0000-000000000001', action: 'create_expense', details: { amount: 7500000, provider: 'Corralón El Constructor' }, created_at: '2026-03-03T10:00:00Z' },
+  { id: 'al-13', user_id: '00000000-0000-0000-0000-000000000006', action: 'create_comment', details: { text: 'Consulta sobre pagos' }, created_at: '2026-03-06T15:00:00Z' },
+  { id: 'al-14', user_id: '00000000-0000-0000-0000-000000000001', action: 'create_expense', details: { amount: 5200000, provider: 'Cerámica San Lorenzo' }, created_at: '2026-03-12T10:00:00Z' },
+  { id: 'al-15', user_id: '00000000-0000-0000-0000-000000000001', action: 'create_expense', details: { amount: 2800000, provider: 'Aluminios Cuyo' }, created_at: '2026-03-14T10:00:00Z' },
+  { id: 'al-16', user_id: '00000000-0000-0000-0000-000000000001', action: 'export_pdf', details: { type: 'resumen' }, created_at: '2026-03-22T09:00:00Z' },
+  { id: 'al-17', user_id: '00000000-0000-0000-0000-000000000002', action: 'create_comment', details: { text: '¿Se pueden agregar mosquiteros?' }, created_at: '2026-03-14T18:00:00Z' },
+  { id: 'al-18', user_id: '00000000-0000-0000-0000-000000000001', action: 'create_expense', details: { amount: 4800000, provider: 'Cuadrilla García' }, created_at: '2026-03-05T10:00:00Z' },
+  { id: 'al-19', user_id: '00000000-0000-0000-0000-000000000001', action: 'create_expense', details: { amount: 7200000, provider: 'Electricidad Rodríguez' }, created_at: '2026-03-01T10:00:00Z' },
+  { id: 'al-20', user_id: '00000000-0000-0000-0000-000000000001', action: 'create_expense', details: { amount: 4900000, provider: 'Sanitarios López' }, created_at: '2026-03-08T10:00:00Z' },
+]
+
+// ============================================
+// FEATURE FLAGS
+// ============================================
+export const mockFeatureFlags: FeatureFlag[] = [
+  { id: 'ff-1', nombre: 'export_pdf_v2', descripcion: 'Nueva versión del exportador PDF con gráficos', activo_global: false, activo_para_usuarios: ['00000000-0000-0000-0000-000000000001'], activo_para_planes: ['pro'], created_at: '2026-03-01T10:00:00Z' },
+  { id: 'ff-2', nombre: 'comentarios_realtime', descripcion: 'Comentarios en tiempo real con Supabase Realtime', activo_global: false, activo_para_usuarios: [], activo_para_planes: ['control', 'pro'], created_at: '2026-03-05T10:00:00Z' },
+  { id: 'ff-3', nombre: 'dashboard_widgets_v2', descripcion: 'Nuevos widgets drag & drop para el dashboard', activo_global: true, activo_para_usuarios: [], activo_para_planes: [], created_at: '2026-02-15T10:00:00Z' },
+  { id: 'ff-4', nombre: 'simulador_escenarios', descripcion: 'Simulador de escenarios presupuestarios', activo_global: false, activo_para_usuarios: [], activo_para_planes: ['pro'], created_at: '2026-03-10T10:00:00Z' },
+  { id: 'ff-5', nombre: 'multi_moneda', descripcion: 'Soporte para múltiples monedas (EUR, BRL)', activo_global: false, activo_para_usuarios: ['00000000-0000-0000-0000-000000000004'], activo_para_planes: [], created_at: '2026-03-15T10:00:00Z' },
 ]
 
 // ============================================

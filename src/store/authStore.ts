@@ -8,7 +8,7 @@ interface AuthState {
   error: string | null
   initialize: () => Promise<void>
   signIn: (email: string, password: string) => Promise<void>
-  signUp: (email: string, password: string, name: string, role: 'arquitecto' | 'cliente') => Promise<void>
+  signUp: (email: string, password: string, name: string, role: 'arquitecto' | 'cliente' | 'admin') => Promise<void>
   signOut: () => Promise<void>
   clearError: () => void
 }
@@ -33,7 +33,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ loading: true, error: null })
     const user = mockUsers.find((u) => u.email === email)
     if (!user) {
-      set({ loading: false, error: 'Usuario no encontrado. Usá arq@test.com o cliente@hitos.com' })
+      set({ loading: false, error: 'Usuario no encontrado. Usá arq@test.com, cliente@hitos.com o admin@hitos.com' })
       throw new Error('User not found')
     }
     localStorage.setItem('hitos-mock-user', email)
@@ -53,6 +53,12 @@ export const useAuthStore = create<AuthState>((set) => ({
       firma_en_pdf: false,
       logo_url: null,
       last_sign_in: new Date().toISOString(),
+      estado: 'activo',
+      plan: 'gratis',
+      plan_vence_at: null,
+      notas_admin: null,
+      responsable_seguimiento: null,
+      pipeline_estado: 'registrado',
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     }

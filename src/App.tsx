@@ -21,6 +21,14 @@ import { ClientPresupuesto } from '@/components/client/ClientPresupuesto'
 import { ClientPNL } from '@/components/client/ClientPNL'
 import { ClientAnalisis } from '@/components/client/ClientAnalisis'
 import { LandingPage } from '@/pages/LandingPage'
+import { AdminGuard } from '@/routes/AdminGuard'
+import { AdminLayout } from '@/components/admin/layout/AdminLayout'
+import { AdminDashboard } from '@/pages/admin/AdminDashboard'
+import { AdminUsuarios } from '@/pages/admin/AdminUsuarios'
+import { AdminPipeline } from '@/pages/admin/AdminPipeline'
+import { AdminOperaciones } from '@/pages/admin/AdminOperaciones'
+import { AdminFlags } from '@/pages/admin/AdminFlags'
+import { AdminHealth } from '@/pages/admin/AdminHealth'
 
 // Redirect from old /projects/:id/* to new /proyecto/:id/*
 function ProjectRedirect() {
@@ -92,6 +100,22 @@ export default function App() {
         <Route path="presupuesto" element={<ClientPresupuesto />} />
         <Route path="pnl" element={<ClientPNL />} />
         <Route path="analisis" element={<ClientAnalisis />} />
+      </Route>
+      {/* Admin panel */}
+      <Route
+        path="/admin"
+        element={
+          <AdminGuard>
+            <AdminLayout />
+          </AdminGuard>
+        }
+      >
+        <Route index element={<AdminDashboard />} />
+        <Route path="usuarios" element={<AdminUsuarios />} />
+        <Route path="pipeline" element={<AdminPipeline />} />
+        <Route path="operaciones" element={<AdminOperaciones />} />
+        <Route path="flags" element={<AdminFlags />} />
+        <Route path="health" element={<AdminHealth />} />
       </Route>
       {/* Profile */}
       <Route

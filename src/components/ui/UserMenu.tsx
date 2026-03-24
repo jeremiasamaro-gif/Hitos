@@ -5,7 +5,7 @@ import { useAuthStore } from '@/store/authStore'
 
 interface UserMenuProps {
   userName: string
-  userRole: 'arquitecto' | 'cliente'
+  userRole: 'arquitecto' | 'cliente' | 'admin'
   userEmail?: string
   currentProjectId?: string
 }
