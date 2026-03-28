@@ -17,10 +17,8 @@ export function AdminGuard({ children }: { children: ReactNode }) {
 
   if (!user) return <Navigate to="/auth" replace />
 
-  const isAdmin = mockAdminUsers.some((a) => a.id === user.id)
-  if (!isAdmin) {
-    return <Navigate to="/auth" replace state={{ error: 'No tenés acceso a esta sección' }} />
-  }
+  const isAdmin = mockAdminUsers.some((a) => a.email === user.email)
+  if (!isAdmin) return <Navigate to="/projects" replace />
 
   return <>{children}</>
 }
