@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { Search } from 'lucide-react'
 import type { User, UserEstado, UserPlan } from '@/lib/supabase'
 import { mockUsers } from '@/store/mockData'
+import { useAuthStore } from '@/store/authStore'
+import { logActivity } from '@/lib/logActivity'
 import { UsuariosTable } from '@/components/admin/usuarios/UsuariosTable'
 import { UsuarioDetalle } from '@/components/admin/usuarios/UsuarioDetalle'
 
@@ -12,11 +14,13 @@ type PlanFilter = 'todos' | UserPlan
 
 export function AdminUsuarios() {
   const navigate = useNavigate()
+  const adminUser = useAuthStore((s) => s.user)
   const [rolFilter, setRolFilter] = useState<RolFilter>('todos')
   const [estadoFilter, setEstadoFilter] = useState<EstadoFilter>('todos')
   const [planFilter, setPlanFilter] = useState<PlanFilter>('todos')
   const [search, setSearch] = useState('')
   const [detailUser, setDetailUser] = useState<User | null>(null)
+  const [confirmImpersonate, setConfirmImpersonate] = useState<User | null>(null)
 
   const filtered = useMemo(() => {
     return mockUsers
@@ -31,10 +35,29 @@ export function AdminUsuarios() {
       })
   }, [rolFilter, estadoFilter, planFilter, search])
 
-  const handleImpersonate = (user: User) => {
-    sessionStorage.setItem('hitos-impersonating', JSON.stringify({ id: user.id, name: user.name }))
-    localStorage.setItem('hitos-mock-user', user.email)
-    navigate(user.role === 'arquitecto' ? '/projects' : '/projects')
+  // CRT-003: Impersonación con confirmación + audit log + timeout
+  const handleRequestImpersonate = (user: User) => {
+    setConfirmImpersonate(user)
+  }
+
+  const handleConfirmImpersonate = () => {
+    if (!confirmImpersonate || !adminUser) return
+    // Log the impersonation
+    logActivity(adminUser.id, 'impersonate_user', {
+      target_user_id: confirmImpersonate.id,
+      target_user_email: confirmImpersonate.email,
+      timestamp: new Date().toISOString(),
+    })
+    sessionStorage.setItem('hitos-impersonating', JSON.stringify({
+      id: confirmImpersonate.id,
+      name: confirmImpersonate.name,
+      admin_id: adminUser.id,
+      admin_email: adminUser.email,
+      started_at: Date.now(),
+    }))
+    localStorage.setItem('hitos-mock-user', confirmImpersonate.email)
+    setConfirmImpersonate(null)
+    navigate('/projects')
   }
 
   return (
@@ -82,7 +105,7 @@ export function AdminUsuarios() {
       <UsuariosTable
         users={filtered}
         onViewDetail={setDetailUser}
-        onImpersonate={handleImpersonate}
+        onImpersonate={handleRequestImpersonate}
         onQuickEdit={setDetailUser}
       />
 
@@ -90,8 +113,36 @@ export function AdminUsuarios() {
         <UsuarioDetalle
           user={detailUser}
           onClose={() => setDetailUser(null)}
-          onImpersonate={handleImpersonate}
+          onImpersonate={handleRequestImpersonate}
         />
+      )}
+
+      {/* CRT-003: Modal de confirmación de impersonación */}
+      {confirmImpersonate && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-card border border-border rounded-xl p-6 max-w-sm mx-4 shadow-xl">
+            <h3 className="font-heading font-bold text-lg mb-2">Confirmar impersonación</h3>
+            <p className="text-sm text-secondary mb-4">
+              ¿Confirmar impersonación de <strong>{confirmImpersonate.name}</strong> ({confirmImpersonate.email})?
+              <br />
+              <span className="text-xs text-muted mt-1 block">Esta acción quedará registrada. La sesión expira en 30 minutos.</span>
+            </p>
+            <div className="flex gap-2 justify-end">
+              <button
+                onClick={() => setConfirmImpersonate(null)}
+                className="px-4 py-2 text-sm rounded-lg border border-border hover:bg-hover transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleConfirmImpersonate}
+                className="px-4 py-2 text-sm rounded-lg bg-amber-500 text-white hover:bg-amber-600 transition-colors font-medium"
+              >
+                Confirmar
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )

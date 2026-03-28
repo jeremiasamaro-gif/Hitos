@@ -8,7 +8,7 @@ interface AuthState {
   error: string | null
   initialize: () => Promise<void>
   signIn: (email: string, password: string) => Promise<void>
-  signUp: (email: string, password: string, name: string, role: 'arquitecto' | 'cliente' | 'admin') => Promise<void>
+  signUp: (email: string, password: string, name: string, role: 'arquitecto' | 'cliente') => Promise<void>
   signOut: () => Promise<void>
   clearError: () => void
 }
@@ -42,6 +42,12 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   signUp: async (email, _password, name, role) => {
     set({ loading: true, error: null })
+    // CRT-006: Only allow valid non-admin roles
+    const ALLOWED_SIGNUP_ROLES: readonly string[] = ['arquitecto', 'cliente']
+    if (!ALLOWED_SIGNUP_ROLES.includes(role)) {
+      set({ loading: false, error: 'Rol no válido para registro' })
+      throw new Error('Invalid role')
+    }
     const newUser: User = {
       id: crypto.randomUUID(),
       email,

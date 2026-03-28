@@ -2,6 +2,8 @@
 
 Bugs detectados durante la auditoría QA que NO se pudieron arreglar sin riesgo de romper otros módulos.
 
+**Última actualización:** 2026-03-25
+
 ---
 
 ## BLK-003 (parcial) — Migrar callsites a `convertExpenseAmount()`
@@ -56,19 +58,6 @@ El sistema de admin usa `mockAdminUsers` para verificar acceso. Es inherente al 
 
 ---
 
-## CRT-003 — Impersonación sin re-autenticación ni audit log
-
-**Motivo por el que no se arregló:**
-El fix requiere un flujo de re-autenticación (modal de contraseña) y una tabla de audit logs en Supabase. Ambos dependen de la migración a backend real.
-
-**Qué habría que hacer:**
-1. Agregar modal de confirmación de contraseña antes de impersonar.
-2. Crear tabla `impersonation_logs(admin_id, target_user_id, started_at, ended_at)`.
-3. Agregar tiempo límite (30 min) a la sesión de impersonación.
-4. Restaurar sesión admin correctamente al salir de impersonación.
-
----
-
 ## CRT-004 — Firma y logo NO se pasan al PDF
 
 **Motivo por el que no se arregló:**
@@ -78,30 +67,6 @@ El fix requiere:
 3. Agregar try-catch + placeholder en `<Image>` de `@react-pdf/renderer`.
 
 El cambio afecta el pipeline de generación de PDF (3 archivos: ExportPDFButton, ProjectReport, FooterNote) y requiere testing manual del PDF generado para verificar que no crashee con URLs inválidas. Se documenta para fix dedicado.
-
----
-
-## CRT-005 — ProtectedRoute no verifica estado de cuenta (suspendido/churned)
-
-**Motivo por el que no se arregló:**
-Con mock data, el estado de la cuenta se puede manipular desde el cliente. El fix real requiere que Supabase Auth + RLS bloqueen el acceso de usuarios suspendidos a nivel de API. Un check client-side es trivialmente bypasseable.
-
-**Qué habría que hacer:**
-1. Agregar check `user.estado === 'activo'` en ProtectedRoute (client-side, bypass-able).
-2. Agregar RLS policy `auth.jwt() ->> 'estado' = 'activo'` en todas las tablas.
-3. Agregar webhook de Supabase Auth que revoque tokens de usuarios suspendidos.
-
----
-
-## CRT-006 — SignUp acepta cualquier rol sin validación
-
-**Motivo por el que no se arregló:**
-El formulario de registro actual solo muestra 'arquitecto' y 'cliente' como opciones de UI. Pero la función `signUp()` acepta cualquier string. Un fix client-side es trivialmente bypasseable. El fix real requiere validación server-side.
-
-**Qué habría que hacer:**
-1. Client-side: agregar type guard `if (role !== 'arquitecto' && role !== 'cliente') throw`.
-2. Server-side: Supabase Edge Function que valide rol en signup.
-3. Nunca confiar en el rol enviado desde el cliente.
 
 ---
 
@@ -121,3 +86,24 @@ Requiere agregar validación en `ExpenseFormModal` (UI) y en `createExpense` (st
 1. En `ExpenseFormModal`: validar `amount_ars > 0` antes de submit.
 2. En `createExpense`: throw si `data.amount_ars < 0`.
 3. En `updateExpense`: mismo check.
+
+---
+
+## CRT-005 (server-side) — Verificación de estado requiere RLS
+
+**Estado:** Check client-side implementado en `ProtectedRoute.tsx` (usuarios suspendidos son redirigidos y deslogueados). Pero es bypasseable desde consola.
+
+**Qué habría que hacer para fix server-side:**
+1. Agregar RLS policy `auth.jwt() ->> 'estado' = 'activo'` en todas las tablas.
+2. Agregar webhook de Supabase Auth que revoque tokens de usuarios suspendidos.
+
+---
+
+## CRT-003 (server-side) — Impersonación requiere re-autenticación con password
+
+**Estado:** Modal de confirmación, audit log (mock), timeout de 30 min, y restauración de sesión admin implementados. Falta re-autenticación con password real.
+
+**Qué habría que hacer:**
+1. Agregar input de contraseña en el modal de confirmación.
+2. Validar contra Supabase Auth antes de permitir impersonación.
+3. Migrar audit log a tabla de Supabase.

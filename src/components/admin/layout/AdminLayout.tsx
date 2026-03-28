@@ -1,16 +1,62 @@
+import { useEffect, useState, useCallback } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
 import { LogOut } from 'lucide-react'
 import { useAuthStore } from '@/store/authStore'
+import { logActivity } from '@/lib/logActivity'
 import { AdminSidebar } from './AdminSidebar'
+
+const IMPERSONATION_TIMEOUT_MS = 30 * 60 * 1000 // 30 minutes
 
 export function AdminLayout() {
   const { user, signOut } = useAuthStore()
   const navigate = useNavigate()
+  const [impersonationExpired, setImpersonationExpired] = useState(false)
 
   const handleSignOut = async () => {
     await signOut()
     navigate('/auth')
   }
+
+  // CRT-003: Exit impersonation and restore admin session
+  const exitImpersonation = useCallback(() => {
+    const raw = sessionStorage.getItem('hitos-impersonating')
+    if (raw) {
+      try {
+        const data = JSON.parse(raw)
+        // Restore admin session
+        if (data.admin_email) {
+          localStorage.setItem('hitos-mock-user', data.admin_email)
+        }
+        // Log the exit
+        if (data.admin_id) {
+          logActivity(data.admin_id, 'end_impersonation', {
+            target_user_id: data.id,
+            duration_ms: Date.now() - (data.started_at || Date.now()),
+          })
+        }
+      } catch { /* ignore parse errors */ }
+    }
+    sessionStorage.removeItem('hitos-impersonating')
+    navigate('/admin/usuarios')
+  }, [navigate])
+
+  // CRT-003: Check timeout every 30 seconds
+  useEffect(() => {
+    const raw = sessionStorage.getItem('hitos-impersonating')
+    if (!raw) return
+    const check = () => {
+      try {
+        const data = JSON.parse(raw)
+        if (data.started_at && Date.now() - data.started_at > IMPERSONATION_TIMEOUT_MS) {
+          setImpersonationExpired(true)
+          exitImpersonation()
+        }
+      } catch { /* ignore */ }
+    }
+    check()
+    const interval = setInterval(check, 30_000)
+    return () => clearInterval(interval)
+  }, [exitImpersonation])
 
   // Impersonation banner
   const impersonating = sessionStorage.getItem('hitos-impersonating')
@@ -22,14 +68,16 @@ export function AdminLayout() {
         <div className="bg-amber-500 text-white text-center text-sm py-1.5 px-4">
           Estás viendo la cuenta de otro usuario ·{' '}
           <button
-            onClick={() => {
-              sessionStorage.removeItem('hitos-impersonating')
-              navigate('/admin/usuarios')
-            }}
+            onClick={exitImpersonation}
             className="underline font-medium"
           >
             Salir de impersonación
           </button>
+        </div>
+      )}
+      {impersonationExpired && !impersonating && (
+        <div className="bg-red-500 text-white text-center text-sm py-1.5 px-4">
+          Sesión de impersonación expirada (30 min). Se restauró tu sesión admin.
         </div>
       )}
 

@@ -2,14 +2,15 @@ import { useState, type FormEvent } from 'react'
 import { useAuthStore } from '@/store/authStore'
 import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
-import type { UserRole } from '@/lib/supabase'
+// CRT-006: Only allow signup with non-admin roles
+type SignupRole = 'arquitecto' | 'cliente'
 
 export function RegisterForm({ onToggle }: { onToggle: () => void }) {
   const { signUp, loading, error, clearError } = useAuthStore()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
-  const [role, setRole] = useState<UserRole>('arquitecto')
+  const [role, setRole] = useState<SignupRole>('arquitecto')
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
