@@ -48,6 +48,9 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     fetchComments(id)
   }, [id, fetchProject, fetchItems, fetchExpenses, fetchRate, fetchComments])
 
+  // TODO-BLK-004: Agregar guard de membresía real cuando se migre a Supabase.
+  // Actualmente con mock data no se puede validar membresía de forma segura.
+  // El fix requiere: query a project_members + redirect si no es miembro ni owner.
   const userRole = useMemo<UserRole>(() => {
     if (!user || !id) return 'cliente'
     const membership = mockProjectMembers.find(

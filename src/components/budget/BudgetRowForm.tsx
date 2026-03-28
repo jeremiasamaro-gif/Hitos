@@ -71,7 +71,7 @@ export function BudgetRowForm({ allItems, projectId, onAdd }: BudgetRowFormProps
     if (!form.description.trim()) return
     setSaving(true)
     try {
-      const qty = parseFloat(form.quantity) || form.level !== 'item' ? 1 : 0
+      const qty = parseFloat(form.quantity) || (form.level !== 'item' ? 1 : 0)
       const price = parseFloat(form.unitPrice) || 0
       await onAdd({
         project_id: projectId,

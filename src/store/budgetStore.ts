@@ -2,6 +2,15 @@ import { create } from 'zustand'
 import type { BudgetItem } from '@/lib/supabase'
 import { mockBudgetItems } from './mockData'
 
+/** BLK-001: Collect all descendant IDs recursively for cascade delete */
+function getAllDescendantIds(items: BudgetItem[], parentId: string): string[] {
+  const directChildren = items.filter((i) => i.parent_id === parentId)
+  return [
+    ...directChildren.map((c) => c.id),
+    ...directChildren.flatMap((c) => getAllDescendantIds(items, c.id)),
+  ]
+}
+
 interface BudgetState {
   items: BudgetItem[]
   loading: boolean
@@ -45,8 +54,14 @@ export const useBudgetStore = create<BudgetState>((set) => ({
   },
 
   deleteItem: async (id) => {
-    const idx = mockBudgetItems.findIndex((i) => i.id === id)
-    if (idx >= 0) mockBudgetItems.splice(idx, 1)
-    set((s) => ({ items: s.items.filter((i) => i.id !== id) }))
+    // BLK-001: Cascade delete — remove item + all descendants
+    set((s) => {
+      const toDelete = new Set([id, ...getAllDescendantIds(s.items, id)])
+      // Also remove from mock data array
+      for (let i = mockBudgetItems.length - 1; i >= 0; i--) {
+        if (toDelete.has(mockBudgetItems[i].id)) mockBudgetItems.splice(i, 1)
+      }
+      return { items: s.items.filter((i) => !toDelete.has(i.id)) }
+    })
   },
 }))

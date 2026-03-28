@@ -274,14 +274,7 @@ export function buildPnlSections(
 
 // ============================================
 // STATUS for spent items (semáforo)
+// CRT-009: Re-exporta desde fuente centralizada
 // ============================================
 
-export type SpentStatus = 'ok' | 'at_risk' | 'exceeded'
-
-export function getSpentStatus(spent: number, budgeted: number): SpentStatus {
-  if (budgeted <= 0) return spent > 0 ? 'exceeded' : 'ok'
-  const ratio = spent / budgeted
-  if (ratio > 1) return 'exceeded'
-  if (ratio >= 0.8) return 'at_risk'
-  return 'ok'
-}
+export { getPnlStatus as getSpentStatus, type PnlStatus as SpentStatus } from './pnlThresholds'

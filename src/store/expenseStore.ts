@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import type { Expense } from '@/lib/supabase'
 import { mockExpenses } from './mockData'
+import { useCurrencyStore } from './currencyStore'
 
 interface ExpenseFilters {
   budgetItemId?: string
@@ -44,8 +45,11 @@ export const useExpenseStore = create<ExpenseState>((set, get) => ({
   },
 
   createExpense: async (data) => {
+    // BLK-003: Lockear TC al momento de creación del gasto
+    const currentRate = useCurrencyStore.getState().latestRate
     const expense: Expense = {
       ...data,
+      exchange_rate: data.exchange_rate ?? currentRate?.rate_blue ?? null,
       id: crypto.randomUUID(),
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),

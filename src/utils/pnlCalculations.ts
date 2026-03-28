@@ -1,6 +1,8 @@
 import type { BudgetItem, Expense } from '@/lib/supabase'
+import { getPnlStatus, type PnlStatus } from '@/lib/pnlThresholds'
 
-export type PnlStatus = 'ok' | 'at_risk' | 'exceeded'
+// CRT-009: Re-export type for consumers (StatusBadge etc.)
+export type { PnlStatus }
 
 export interface PnlRow {
   item: BudgetItem
@@ -12,13 +14,8 @@ export interface PnlRow {
   children?: PnlRow[]
 }
 
-function getStatus(spent: number, budgeted: number): PnlStatus {
-  if (budgeted <= 0) return spent > 0 ? 'exceeded' : 'ok'
-  const ratio = spent / budgeted
-  if (ratio > 1) return 'exceeded'
-  if (ratio > 0.8) return 'at_risk'
-  return 'ok'
-}
+// CRT-009: Delegated to centralized pnlThresholds.ts
+const getStatus = getPnlStatus
 
 function worstStatus(statuses: PnlStatus[]): PnlStatus {
   if (statuses.includes('exceeded')) return 'exceeded'

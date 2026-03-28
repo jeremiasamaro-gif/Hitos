@@ -1,8 +1,25 @@
+import type { Expense } from '@/lib/supabase'
+
 export type CurrencyMode = 'ARS' | 'USD_BLUE'
 
 export function convertAmount(amountArs: number, mode: CurrencyMode, rateBlue: number): number {
   if (mode === 'ARS' || !rateBlue) return amountArs
-  return rateBlue > 0 ? amountArs / rateBlue : 0
+  return rateBlue > 0 ? Math.round((amountArs / rateBlue) * 100) / 100 : 0
+}
+
+/**
+ * Convierte un gasto histórico usando el TC lockeado al momento de creación.
+ * Usa expense.exchange_rate si existe, o tcBlueActual como fallback.
+ * BLK-003: Los gastos deben convertirse con su TC histórico, no el global.
+ */
+export function convertExpenseAmount(
+  expense: Expense,
+  mode: CurrencyMode,
+  tcBlueActual: number
+): number {
+  if (mode === 'ARS') return expense.amount_ars
+  const tc = expense.exchange_rate ?? tcBlueActual
+  return tc > 0 ? Math.round((expense.amount_ars / tc) * 100) / 100 : 0
 }
 
 export function formatCurrency(amount: number, mode: CurrencyMode): string {
