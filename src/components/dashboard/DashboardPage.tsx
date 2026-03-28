@@ -12,6 +12,7 @@ import { BudgetVsSpentChart } from './BudgetVsSpentChart'
 import { ExpenseDistributionChart } from './ExpenseDistributionChart'
 import { MonthlySpendingChart } from './MonthlySpendingChart'
 import { AlertCards } from './AlertCards'
+import { SaldoMonedaDura } from './SaldoMonedaDura'
 import { ExportPDFButton } from '@/components/ui/ExportPDFButton'
 import { TimelineSection } from '@/components/project/TimelineSection'
 
@@ -22,6 +23,7 @@ const WIDGET_COMPONENTS: Record<string, () => JSX.Element> = {
   budgetVsSpent: () => <BudgetVsSpentChart />,
   monthlySpending: () => <MonthlySpendingChart />,
   expenseDistribution: () => <ExpenseDistributionChart />,
+  saldo_moneda_dura: () => <SaldoMonedaDura />,
   alerts: () => <AlertCards />,
 }
 

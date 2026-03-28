@@ -17,7 +17,8 @@ export const WIDGET_REGISTRY: WidgetDef[] = [
   { id: 'budgetVsSpent', label: 'Presupuesto vs Gastado', section: 'resumen', defaultVisible: true, defaultOrder: 3, minWidth: 'half' },
   { id: 'monthlySpending', label: 'Gasto Mensual', section: 'resumen', defaultVisible: true, defaultOrder: 4, minWidth: 'half' },
   { id: 'expenseDistribution', label: 'Distribucion de Gastos', section: 'resumen', defaultVisible: true, defaultOrder: 5, minWidth: 'full' },
-  { id: 'alerts', label: 'Alertas', section: 'resumen', defaultVisible: true, defaultOrder: 6, minWidth: 'full' },
+  { id: 'saldo_moneda_dura', label: '¿Cuánto queda pagar?', section: 'resumen', defaultVisible: true, defaultOrder: 6, minWidth: 'full' },
+  { id: 'alerts', label: 'Alertas', section: 'resumen', defaultVisible: true, defaultOrder: 7, minWidth: 'full' },
   // PNL
   { id: 'pnl_period_selector', label: 'Selector de período', section: 'pnl', defaultVisible: true, defaultOrder: 0, minWidth: 'full' },
   { id: 'pnl_table', label: 'Tabla PNL', section: 'pnl', defaultVisible: true, defaultOrder: 1, minWidth: 'full' },

@@ -348,8 +348,12 @@ export const mockComments: Comment[] = [
 // EXCHANGE RATES
 // ============================================
 export const mockExchangeRates: ExchangeRate[] = [
-  { id: 'er-1', project_id: PROJECT_ID, date: '2026-03-01', rate_blue: 1420, created_by: ARQ_ID, created_at: '2026-03-01T10:00:00Z' },
-  { id: 'er-2', project_id: PROJECT_ID, date: '2026-03-15', rate_blue: 1420, created_by: ARQ_ID, created_at: '2026-03-15T10:00:00Z' },
+  { id: 'er-1', project_id: PROJECT_ID, date: '2026-01-10', rate_blue: 1320, created_by: ARQ_ID, created_at: '2026-01-10T10:00:00Z' },
+  { id: 'er-2', project_id: PROJECT_ID, date: '2026-01-25', rate_blue: 1350, created_by: ARQ_ID, created_at: '2026-01-25T10:00:00Z' },
+  { id: 'er-3', project_id: PROJECT_ID, date: '2026-02-08', rate_blue: 1380, created_by: ARQ_ID, created_at: '2026-02-08T10:00:00Z' },
+  { id: 'er-4', project_id: PROJECT_ID, date: '2026-02-22', rate_blue: 1410, created_by: ARQ_ID, created_at: '2026-02-22T10:00:00Z' },
+  { id: 'er-5', project_id: PROJECT_ID, date: '2026-03-01', rate_blue: 1420, created_by: ARQ_ID, created_at: '2026-03-01T10:00:00Z' },
+  { id: 'er-6', project_id: PROJECT_ID, date: '2026-03-15', rate_blue: 1450, created_by: ARQ_ID, created_at: '2026-03-15T10:00:00Z' },
 ]
 
 // ============================================
