@@ -3,7 +3,7 @@ import { useExpenseStore } from '@/store/expenseStore'
 import { useBudgetStore } from '@/store/budgetStore'
 import { useAuthStore } from '@/store/authStore'
 import { useCurrencyStore } from '@/store/currencyStore'
-import { formatCurrency } from '@/utils/currency'
+import { formatCurrency, convertExpenseAmount } from '@/utils/currency'
 import { formatDate, formatWeek } from '@/utils/formatters'
 import { getPaymentMethodStyle } from '@/lib/formatUtils'
 import { ExpenseFormModal } from './ExpenseFormModal'
@@ -25,7 +25,7 @@ export function ExpenseTable({ searchQuery = '' }: ExpenseTableProps) {
   const { expenses, deleteExpense, filters } = useExpenseStore()
   const items = useBudgetStore((s) => s.items)
   const user = useAuthStore((s) => s.user)
-  const { mode, convert } = useCurrencyStore()
+  const { mode, latestRate } = useCurrencyStore()
   const [editExpense, setEditExpense] = useState<Expense | null>(null)
   const [duplicateExpense, setDuplicateExpense] = useState<Expense | null>(null)
 
@@ -129,7 +129,7 @@ export function ExpenseTable({ searchQuery = '' }: ExpenseTableProps) {
                       )}
                     </td>
                     <td className="py-2 px-3 text-right font-mono text-sm">
-                      {formatCurrency(convert(exp.amount_ars), mode)}
+                      {formatCurrency(convertExpenseAmount(exp, mode, latestRate?.rate_blue ?? 0), mode)}
                     </td>
                     <td className="py-2 px-3 text-center">
                       {exp.payment_method ? (() => {

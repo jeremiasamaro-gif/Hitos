@@ -50,6 +50,10 @@ export interface ReportData {
   totalSpent: number
   globalProgress: number
   generatedAt: Date
+  // CRT-004: firma y logo del arquitecto
+  firmaUrl?: string | null
+  firmaEnPdf?: boolean
+  logoUrl?: string | null
 }
 
 interface ProjectReportProps {
@@ -86,6 +90,7 @@ export function ProjectReport({ data, variant }: ProjectReportProps) {
         clientName={data.clientName}
         architectName={data.architectName}
         generatedAt={data.generatedAt}
+        logoUrl={data.logoUrl}
       />
 
       {/* Page 2+: Summary */}
@@ -110,6 +115,8 @@ export function ProjectReport({ data, variant }: ProjectReportProps) {
           <FooterNote
             architectName={data.architectName}
             generatedAt={data.generatedAt}
+            firmaUrl={data.firmaUrl}
+            firmaEnPdf={data.firmaEnPdf}
           />
         </Page>
       )}
@@ -121,6 +128,8 @@ export function ProjectReport({ data, variant }: ProjectReportProps) {
           <FooterNote
             architectName={data.architectName}
             generatedAt={data.generatedAt}
+            firmaUrl={data.firmaUrl}
+            firmaEnPdf={data.firmaEnPdf}
           />
         </Page>
       )}

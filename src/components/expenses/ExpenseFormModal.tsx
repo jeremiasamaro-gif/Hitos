@@ -38,6 +38,7 @@ export function ExpenseFormModal({ open, onClose, expense, duplicateMode }: Prop
   const [weekNumber, setWeekNumber] = useState(expense?.week_number?.toString() || '')
   const [currency, setCurrency] = useState<'ARS' | 'USD'>('ARS')
   const [loading, setLoading] = useState(false)
+  const [amountError, setAmountError] = useState<string | null>(null)
 
   const handleCurrencyChange = (cur: 'ARS' | 'USD') => {
     setCurrency(cur)
@@ -63,6 +64,16 @@ export function ExpenseFormModal({ open, onClose, expense, duplicateMode }: Prop
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     if (!projectId || !user) return
+
+    // MAJ-001: Validate non-negative amounts
+    const parsedArs = parseFloat(amountArs) || 0
+    const parsedUsd = parseFloat(amountUsd) || 0
+    if (parsedArs < 0 || parsedUsd < 0) {
+      setAmountError('El monto no puede ser negativo')
+      return
+    }
+    setAmountError(null)
+
     setLoading(true)
     try {
       const data = {
@@ -71,8 +82,8 @@ export function ExpenseFormModal({ open, onClose, expense, duplicateMode }: Prop
         budget_item_id: budgetItemId || null,
         provider,
         detail,
-        amount_ars: parseFloat(amountArs) || 0,
-        amount_usd: parseFloat(amountUsd) || 0,
+        amount_ars: parsedArs,
+        amount_usd: parsedUsd,
         exchange_rate: parseFloat(exchangeRate) || null,
         payment_method: paymentMethod,
         week_number: weekNumber ? parseInt(weekNumber) : null,
@@ -146,10 +157,13 @@ export function ExpenseFormModal({ open, onClose, expense, duplicateMode }: Prop
               onChange={(e) => setExchangeRate(e.target.value)}
             />
           </div>
-          {currency === 'ARS' && amountUsd && (
+          {amountError && (
+            <p className="text-xs text-status-exceeded mt-1">{amountError}</p>
+          )}
+          {!amountError && currency === 'ARS' && amountUsd && (
             <p className="text-xs text-secondary mt-1">Equivale a US$ {amountUsd}</p>
           )}
-          {currency === 'USD' && amountArs && (
+          {!amountError && currency === 'USD' && amountArs && (
             <p className="text-xs text-secondary mt-1">Equivale a $ {Number(amountArs).toLocaleString('es-AR')}</p>
           )}
         </div>

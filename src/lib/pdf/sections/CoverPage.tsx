@@ -1,5 +1,16 @@
-import { Page, View, Text, StyleSheet } from '@react-pdf/renderer'
+import { Page, View, Text, Image, StyleSheet } from '@react-pdf/renderer'
 import { formatDateShort, PDF_COLORS } from '../pdfUtils'
+
+// CRT-007: Only render Image if URL is a valid http/https URL
+function isValidImageUrl(url: string | null | undefined): url is string {
+  if (!url) return false
+  try {
+    const parsed = new URL(url)
+    return ['http:', 'https:'].includes(parsed.protocol)
+  } catch {
+    return false
+  }
+}
 
 const styles = StyleSheet.create({
   page: {
@@ -50,6 +61,12 @@ const styles = StyleSheet.create({
     color: PDF_COLORS.textSecondary,
     marginTop: 60,
   },
+  logo: {
+    width: 120,
+    height: 'auto' as unknown as number,
+    objectFit: 'contain' as const,
+    marginBottom: 24,
+  },
 })
 
 interface CoverPageProps {
@@ -58,11 +75,15 @@ interface CoverPageProps {
   clientName: string
   architectName: string
   generatedAt: Date
+  logoUrl?: string | null
 }
 
-export function CoverPage({ projectName, address, clientName, architectName, generatedAt }: CoverPageProps) {
+export function CoverPage({ projectName, address, clientName, architectName, generatedAt, logoUrl }: CoverPageProps) {
   return (
     <Page size="A4" style={styles.page}>
+      {isValidImageUrl(logoUrl) && (
+        <Image src={logoUrl} style={styles.logo} />
+      )}
       <Text style={styles.projectName}>{projectName}</Text>
       {address && <Text style={styles.address}>{address}</Text>}
 

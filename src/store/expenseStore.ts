@@ -45,6 +45,8 @@ export const useExpenseStore = create<ExpenseState>((set, get) => ({
   },
 
   createExpense: async (data) => {
+    // MAJ-001: Reject negative amounts
+    if (data.amount_ars < 0) throw new Error('Monto ARS inválido: no puede ser negativo')
     // BLK-003: Lockear TC al momento de creación del gasto
     const currentRate = useCurrencyStore.getState().latestRate
     const expense: Expense = {
@@ -59,6 +61,8 @@ export const useExpenseStore = create<ExpenseState>((set, get) => ({
   },
 
   updateExpense: async (id, data) => {
+    // MAJ-001: Reject negative amounts
+    if (data.amount_ars !== undefined && data.amount_ars < 0) throw new Error('Monto ARS inválido: no puede ser negativo')
     const idx = mockExpenses.findIndex((e) => e.id === id)
     if (idx >= 0) {
       mockExpenses[idx] = { ...mockExpenses[idx], ...data, updated_at: new Date().toISOString() }

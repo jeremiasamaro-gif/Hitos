@@ -3,6 +3,7 @@ import { PDFDownloadLink } from '@react-pdf/renderer'
 import { useProjectContext } from '@/contexts/ProjectContext'
 import { useBudgetStore } from '@/store/budgetStore'
 import { useExpenseStore } from '@/store/expenseStore'
+import { useAuthStore } from '@/store/authStore'
 import { mockUsers, mockProjectMembers } from '@/store/mockData'
 import { ProjectReport, type ReportVariant, type ReportData } from '@/lib/pdf/ProjectReport'
 import { sanitizeFileName } from '@/lib/pdf/pdfUtils'
@@ -16,6 +17,7 @@ export function ExportPDFButton({ variant, label = 'Exportar PDF' }: ExportPDFBu
   const ctx = useProjectContext()
   const items = useBudgetStore((s) => s.items)
   const expenses = useExpenseStore((s) => s.expenses)
+  const user = useAuthStore((s) => s.user)
 
   // Guard: must be inside a project
   if (!ctx?.project) return null
@@ -41,8 +43,12 @@ export function ExportPDFButton({ variant, label = 'Exportar PDF' }: ExportPDFBu
       totalSpent,
       globalProgress,
       generatedAt: new Date(),
+      // CRT-004: firma y logo del arquitecto logueado
+      firmaUrl: user?.firma_en_pdf ? user.firma_url : null,
+      firmaEnPdf: user?.firma_en_pdf ?? false,
+      logoUrl: user?.logo_url ?? null,
     }
-  }, [project, items, expenses, totalBudget, totalSpent, globalProgress])
+  }, [project, items, expenses, totalBudget, totalSpent, globalProgress, user])
 
   const fileName = useMemo(() => {
     const today = new Date()
