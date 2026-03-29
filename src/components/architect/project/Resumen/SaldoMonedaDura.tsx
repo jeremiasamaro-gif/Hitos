@@ -2,6 +2,7 @@ import { Card } from '@/components/ui/Card'
 import { useCurrencyStore } from '@/store/currencyStore'
 import { useBudgetStore } from '@/store/budgetStore'
 import { useExpenseStore } from '@/store/expenseStore'
+import { useAuthStore } from '@/store/authStore'
 import { useProjectContext } from '@/contexts/ProjectContext'
 import { mockExchangeRates } from '@/store/mockData'
 import { formatCurrency } from '@/utils/currency'
@@ -26,6 +27,10 @@ function formatTcDate(dateStr: string): string {
 }
 
 export function SaldoMonedaDura() {
+  const user = useAuthStore((s) => s.user)
+
+  if (user?.role !== 'arquitecto') return null
+
   const { project } = useProjectContext()
   const { latestRate } = useCurrencyStore()
   const items = useBudgetStore((s) => s.items)
@@ -39,14 +44,12 @@ export function SaldoMonedaDura() {
   const tcBlue = latestRate?.rate_blue ?? 1450
   const saldoUSD = tcBlue > 0 ? saldoARS / tcBlue : 0
 
-  // Projection scenarios
   const scenarios = [
     { label: '+10%', factor: 1.10 },
     { label: '+20%', factor: 1.20 },
     { label: '+30%', factor: 1.30 },
   ]
 
-  // Exchange rate history (last 5, sorted by date desc)
   const historial = mockExchangeRates
     .filter((r) => r.project_id === project.id)
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())

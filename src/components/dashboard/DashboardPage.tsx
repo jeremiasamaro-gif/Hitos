@@ -3,6 +3,7 @@ import { DndContext, closestCenter, type DragEndEvent } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { Settings2 } from 'lucide-react'
 import { useProjectContext } from '@/contexts/ProjectContext'
+import { useAuthStore } from '@/store/authStore'
 import { useWidgetLayout } from '@/hooks/useWidgetLayout'
 import { WidgetContainer } from './WidgetContainer'
 import { WidgetCustomizer } from './WidgetCustomizer'
@@ -12,7 +13,7 @@ import { BudgetVsSpentChart } from './BudgetVsSpentChart'
 import { ExpenseDistributionChart } from './ExpenseDistributionChart'
 import { MonthlySpendingChart } from './MonthlySpendingChart'
 import { AlertCards } from './AlertCards'
-import { SaldoMonedaDura } from './SaldoMonedaDura'
+import { SaldoMonedaDura } from '@/components/architect/project/Resumen/SaldoMonedaDura'
 import { ExportPDFButton } from '@/components/ui/ExportPDFButton'
 import { TimelineSection } from '@/components/project/TimelineSection'
 
@@ -29,7 +30,12 @@ const WIDGET_COMPONENTS: Record<string, () => JSX.Element> = {
 
 export function DashboardPage() {
   const { project } = useProjectContext()
+  const user = useAuthStore((s) => s.user)
   const { order, reorder, toggleWidget, resetLayout } = useWidgetLayout(project.id, 'resumen')
+
+  const visibleOrder = user?.role === 'arquitecto'
+    ? order
+    : order.filter((id) => id !== 'saldo_moneda_dura')
   const [customizerOpen, setCustomizerOpen] = useState(false)
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -55,16 +61,16 @@ export function DashboardPage() {
         </div>
       </div>
 
-      {order.length === 0 ? (
+      {visibleOrder.length === 0 ? (
         <div className="text-center py-12 text-secondary text-sm">
           <p>Todos los widgets están ocultos.</p>
           <button onClick={resetLayout} className="text-accent hover:underline mt-1">Restaurar por defecto</button>
         </div>
       ) : (
         <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-          <SortableContext items={order} strategy={verticalListSortingStrategy}>
+          <SortableContext items={visibleOrder} strategy={verticalListSortingStrategy}>
             <div className="space-y-4">
-              {order.map((widgetId) => {
+              {visibleOrder.map((widgetId) => {
                 const Component = WIDGET_COMPONENTS[widgetId]
                 if (!Component) return null
                 return (
