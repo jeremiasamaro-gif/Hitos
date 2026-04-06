@@ -3,6 +3,31 @@ import Papa from 'papaparse'
 import * as XLSX from 'xlsx'
 
 // ============================================
+// CRT-103: Parser de números en formato argentino
+// Maneja formatos con punto de miles y coma decimal:
+//   "1.500,50" → 1500.50
+//   "1500,50"  → 1500.50
+//   "1500.50"  → 1500.50
+//   1500       → 1500 (ya es number)
+// ============================================
+export function parseArgFloat(val: unknown): number {
+  if (typeof val === 'number') return isFinite(val) ? val : 0
+  if (!val) return 0
+  const str = String(val).trim()
+  if (!str) return 0
+  // Formato argentino con miles y decimal: "1.500,50" o "1.500.000,50"
+  if (/^\d{1,3}(\.\d{3})+(,\d+)?$/.test(str)) {
+    return parseFloat(str.replace(/\./g, '').replace(',', '.')) || 0
+  }
+  // Solo coma decimal sin puntos de miles: "1500,50"
+  if (/^\d+,\d+$/.test(str)) {
+    return parseFloat(str.replace(',', '.')) || 0
+  }
+  // Formato estándar internacional o solo dígitos
+  return parseFloat(str.replace(/,/g, '')) || 0
+}
+
+// ============================================
 // TREE TYPES
 // ============================================
 
@@ -174,10 +199,10 @@ export function validateImportRows(
     const code = String(row[mapping.codigo] ?? '').trim()
     const description = String(row[mapping.descripcion] ?? '').trim()
     const unit = String(row[mapping.unidad] ?? '').trim()
-    const quantity = parseFloat(String(row[mapping.cantidad] ?? '0')) || 0
+    const quantity = parseArgFloat(row[mapping.cantidad] ?? '0')
     const rubro = String(row[mapping.rubro] ?? '').trim()
-    const unitPrice = parseFloat(String(row[mapping.precioUnitario] ?? '0')) || 0
-    const mappedTotal = mapping.total ? parseFloat(String(row[mapping.total] ?? '0')) || 0 : 0
+    const unitPrice = parseArgFloat(row[mapping.precioUnitario] ?? '0')
+    const mappedTotal = mapping.total ? parseArgFloat(row[mapping.total] ?? '0') : 0
     const total = mappedTotal > 0 ? mappedTotal : quantity * unitPrice
 
     let status: ValidationStatus = 'valid'
