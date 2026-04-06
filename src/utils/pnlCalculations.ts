@@ -48,7 +48,7 @@ export function calculatePnlRows(
     }
   }
 
-  const isUsd = currencyMode === 'USD Blue'
+  const isUsd = currencyMode === 'USD_BLUE'
 
   // Helper: spent en la moneda correcta, usando TC histórico en USD
   const getSpent = (itemId: string): number => {

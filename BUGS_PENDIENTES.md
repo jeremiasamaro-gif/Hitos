@@ -2,7 +2,7 @@
 
 Bugs detectados durante la auditoría QA que NO se pudieron arreglar sin riesgo de romper otros módulos.
 
-**Última actualización:** 2026-03-28
+**Última actualización:** 2026-04-06
 
 ---
 
@@ -26,19 +26,15 @@ Bugs detectados durante la auditoría QA que NO se pudieron arreglar sin riesgo 
 
 ---
 
-## BLK-004 — Guard de membresía en ProjectProvider
+## BLK-101 — Guard de membresía en ProjectProvider ✅ RESUELTO (parcial)
 
-**Estado:** Comentario TODO agregado en `src/contexts/ProjectContext.tsx`.
+**Resuelto en:** 2026-04-06
 
-**Motivo por el que no se arregló:**
-La app actualmente usa mock data (`mockProjectMembers` array local). No hay query real a Supabase. Un guard basado en mock data no provee seguridad real ya que el array es manipulable desde el cliente.
+**Cambios realizados:**
+- `ProjectContext.tsx`: guard que redirecta silenciosamente a `/projects` si el usuario no es miembro del proyecto ni su arquitecto dueño.
+- `supabase/rls.sql`: políticas RLS documentadas para cuando se migre a Supabase real.
 
-**Qué habría que hacer para arreglarlo correctamente:**
-1. Migrar autenticación y autorización a Supabase Auth + RLS.
-2. Agregar query `supabase.from('project_members').select('role').eq(...)` en ProjectProvider.
-3. Si no es miembro ni owner (`project.architect_id === user.id`), redirect a `/projects`.
-4. Agregar RLS policy en `project_members` que solo permita leer filas propias.
-5. Agregar RLS policy en `projects` que solo permita acceso a miembros.
+**Pendiente para producción:** La validación actual usa `mockProjectMembers` (array en memoria, manipulable desde consola). En Supabase deberá usar query real + RLS policy. Ver `supabase/rls.sql`.
 
 ---
 
@@ -97,6 +93,20 @@ El sistema de admin usa `mockAdminUsers` para verificar acceso. Es inherente al 
 
 ---
 
+## CRT-102 — Escrituras bloqueadas durante impersonación ✅ RESUELTO
+
+**Resuelto en:** 2026-04-06
+
+**Cambios realizados:**
+- `src/lib/api/impersonationGuard.ts`: nuevo helper con `assertNotImpersonating()` y clase `ImpersonationWriteError`.
+- `expenseStore.ts`: `createExpense`, `updateExpense`, `deleteExpense` → `assertNotImpersonating()` al inicio.
+- `budgetStore.ts`: `createItem`, `updateItem`, `deleteItem` → `assertNotImpersonating()` al inicio.
+- `ExpenseFormModal.tsx`: catch de `ImpersonationWriteError`, muestra banner amarillo de advertencia.
+
+**Pendiente:** Aplicar `assertNotImpersonating()` también en `projectStore`, `commentStore` y `currencyStore`. Documentado abajo.
+
+---
+
 ## CRT-003 (server-side) — Impersonación requiere re-autenticación con password
 
 **Estado:** Modal de confirmación, audit log (mock), timeout de 30 min, y restauración de sesión admin implementados. Falta re-autenticación con password real.
@@ -110,16 +120,41 @@ El sistema de admin usa `mockAdminUsers` para verificar acceso. Es inherente al 
 
 ---
 
+## BLK-102 / CRT-101 — TC histórico en PNL (pnlUtils.ts) ✅ RESUELTO PARCIAL
+
+**Resuelto en:** 2026-04-06
+
+**Cambios realizados:**
+- `expenseStore.ts::createExpense()`: calcula y guarda `amount_usd` con el TC histórico en el momento de creación.
+- `SaldoMonedaDura.tsx`: saldo en USD usa `expense.amount_usd` histórico en lugar de dividir `saldoARS / tcBlue` actual.
+- `pnlCalculations.ts::calculatePnlRows()`: refactorizado con `usdByItem` map y parámetro `currencyMode`. Usa TC histórico en modo USD.
+
+**Pendiente — pnlUtils.ts::buildLineItems():** Esta función es la que usa el PNL activo (`PnlPage.tsx` → `buildPnlSections()`). Refactorizar requiere cambiar la firma de `buildPnlSections()` para aceptar `currencyMode` y construir `usdAmountMap` por período. Riesgo de regresión en PNL charts. Documentado para próxima sesión.
+
+---
+
+## CRT-103 — Parser de números argentinos ✅ RESUELTO
+
+**Resuelto en:** 2026-04-06
+
+**Cambios realizados:**
+- `budgetUtils.ts`: nueva función exportada `parseArgFloat(val: unknown): number` que maneja `"1.500,50"`, `"1500,50"` y formato estándar.
+- `validateImportRows()`: reemplazados `parseFloat()` por `parseArgFloat()` en `quantity`, `unitPrice` y `mappedTotal`.
+
+---
+
 ## PENDIENTES QUE REQUIEREN MIGRACIÓN A SUPABASE RLS
 
-Los siguientes 5 ítems no pueden resolverse en el entorno mock. Están bloqueados hasta la migración a Supabase real:
+Los siguientes ítems no pueden resolverse completamente en el entorno mock. Bloqueados hasta la migración a Supabase real:
 
-1. **BLK-003 (PNL callsites)** — Refactorizar `buildLineItems()` y `calculatePnlRows()` para usar TC histórico por gasto. Requiere que `exchange_rate` esté persistido confiablemente en la DB.
+1. **BLK-003 (PNL callsites)** — `pnlUtils.ts::buildLineItems()` y `ExpenseTable.tsx` / `PaymentTable.tsx` siguen usando `convert()` sobre sumas ARS. Requiere refactor completo de `buildPnlSections()`.
 
-2. **BLK-004 — Guard de membresía** — La verificación de `project_members` debe hacerse contra Supabase con RLS, no contra array mock.
+2. **BLK-101 (producción)** — Guard de membresía actual usa `mockProjectMembers` (bypasseable). En producción: query Supabase + RLS policy en `project_members`.
 
 3. **CRT-002 — Admin check server-side** — `AdminGuard` debe validar contra tabla `admin_users` en Supabase con RLS policy.
 
-4. **CRT-005 — Estado de usuario server-side** — Suspensión y verificación de estado deben propagarse via RLS policies y webhook de Supabase Auth para revocar tokens.
+4. **CRT-005 — Estado de usuario server-side** — Suspensión debe propagarse via RLS policies y webhook Supabase Auth.
 
 5. **CRT-003 — Re-autenticación en impersonación** — Validar password real contra Supabase Auth y migrar audit log a tabla real.
+
+6. **CRT-102 (pendiente parcial)** — `assertNotImpersonating()` aplicado en `expenseStore` y `budgetStore`. Falta aplicar en `projectStore`, `commentStore`, `currencyStore`.
