@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import type { BudgetItem } from '@/lib/supabase'
 import { mockBudgetItems } from './mockData'
+import { assertNotImpersonating } from '@/lib/api/impersonationGuard'
 
 /** BLK-001: Collect all descendant IDs recursively for cascade delete */
 function getAllDescendantIds(items: BudgetItem[], parentId: string): string[] {
@@ -32,6 +33,8 @@ export const useBudgetStore = create<BudgetState>((set) => ({
   },
 
   createItem: async (data) => {
+    // CRT-102: Bloquear escrituras durante impersonación
+    assertNotImpersonating('createBudgetItem')
     const item: BudgetItem = {
       ...data,
       id: crypto.randomUUID(),
@@ -43,6 +46,8 @@ export const useBudgetStore = create<BudgetState>((set) => ({
   },
 
   updateItem: async (id, data) => {
+    // CRT-102: Bloquear escrituras durante impersonación
+    assertNotImpersonating('updateBudgetItem')
     const idx = mockBudgetItems.findIndex((i) => i.id === id)
     if (idx >= 0) {
       mockBudgetItems[idx] = { ...mockBudgetItems[idx], ...data, updated_at: new Date().toISOString() }
@@ -54,6 +59,8 @@ export const useBudgetStore = create<BudgetState>((set) => ({
   },
 
   deleteItem: async (id) => {
+    // CRT-102: Bloquear escrituras durante impersonación
+    assertNotImpersonating('deleteBudgetItem')
     // BLK-001: Cascade delete — remove item + all descendants
     set((s) => {
       const toDelete = new Set([id, ...getAllDescendantIds(s.items, id)])

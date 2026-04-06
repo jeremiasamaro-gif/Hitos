@@ -9,6 +9,7 @@ import { useCurrencyStore } from '@/store/currencyStore'
 import { useAuthStore } from '@/store/authStore'
 import { useParams } from 'react-router-dom'
 import type { Expense } from '@/lib/supabase'
+import { ImpersonationWriteError } from '@/lib/api/impersonationGuard'
 
 interface Props {
   open: boolean
@@ -39,6 +40,7 @@ export function ExpenseFormModal({ open, onClose, expense, duplicateMode }: Prop
   const [currency, setCurrency] = useState<'ARS' | 'USD'>('ARS')
   const [loading, setLoading] = useState(false)
   const [amountError, setAmountError] = useState<string | null>(null)
+  const [impersonationError, setImpersonationError] = useState<string | null>(null)
 
   const handleCurrencyChange = (cur: 'ARS' | 'USD') => {
     setCurrency(cur)
@@ -75,6 +77,7 @@ export function ExpenseFormModal({ open, onClose, expense, duplicateMode }: Prop
     setAmountError(null)
 
     setLoading(true)
+    setImpersonationError(null)
     try {
       const data = {
         project_id: projectId,
@@ -98,6 +101,13 @@ export function ExpenseFormModal({ open, onClose, expense, duplicateMode }: Prop
         await createExpense(data)
       }
       onClose()
+    } catch (err) {
+      // CRT-102: Mostrar advertencia si la acción está bloqueada por impersonación
+      if (err instanceof ImpersonationWriteError) {
+        setImpersonationError(
+          'No podés realizar cambios mientras impersonás una cuenta. Salí de la impersonación primero.'
+        )
+      }
     } finally {
       setLoading(false)
     }
@@ -172,6 +182,13 @@ export function ExpenseFormModal({ open, onClose, expense, duplicateMode }: Prop
           <Select label="Método de pago" options={paymentOptions} value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)} />
           <Input label="Semana N°" type="number" value={weekNumber} onChange={(e) => setWeekNumber(e.target.value)} />
         </div>
+
+        {/* CRT-102: Advertencia cuando la acción está bloqueada por impersonación */}
+        {impersonationError && (
+          <div className="rounded-md border border-yellow-500/40 bg-yellow-500/10 px-3 py-2 text-xs text-yellow-400">
+            {impersonationError}
+          </div>
+        )}
 
         <Button type="submit" disabled={loading}>
           {loading ? 'Guardando...' : duplicateMode ? 'Guardar copia' : isEdit ? 'Actualizar' : 'Registrar Gasto'}

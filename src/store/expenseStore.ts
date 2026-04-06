@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import type { Expense } from '@/lib/supabase'
 import { mockExpenses } from './mockData'
 import { useCurrencyStore } from './currencyStore'
+import { assertNotImpersonating } from '@/lib/api/impersonationGuard'
 
 interface ExpenseFilters {
   budgetItemId?: string
@@ -45,6 +46,8 @@ export const useExpenseStore = create<ExpenseState>((set, get) => ({
   },
 
   createExpense: async (data) => {
+    // CRT-102: Bloquear escrituras durante impersonación
+    assertNotImpersonating('createExpense')
     // MAJ-001: Reject negative amounts
     if (data.amount_ars < 0) throw new Error('Monto ARS inválido: no puede ser negativo')
     // BLK-003: Lockear TC al momento de creación del gasto
@@ -69,6 +72,8 @@ export const useExpenseStore = create<ExpenseState>((set, get) => ({
   },
 
   updateExpense: async (id, data) => {
+    // CRT-102: Bloquear escrituras durante impersonación
+    assertNotImpersonating('updateExpense')
     // MAJ-001: Reject negative amounts
     if (data.amount_ars !== undefined && data.amount_ars < 0) throw new Error('Monto ARS inválido: no puede ser negativo')
     const idx = mockExpenses.findIndex((e) => e.id === id)
@@ -82,6 +87,8 @@ export const useExpenseStore = create<ExpenseState>((set, get) => ({
   },
 
   deleteExpense: async (id) => {
+    // CRT-102: Bloquear escrituras durante impersonación
+    assertNotImpersonating('deleteExpense')
     const idx = mockExpenses.findIndex((e) => e.id === id)
     if (idx >= 0) mockExpenses.splice(idx, 1)
     set((s) => ({ expenses: s.expenses.filter((e) => e.id !== id) }))
