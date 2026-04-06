@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, type ReactNode } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, Navigate } from 'react-router-dom'
 import { useProjectStore } from '@/store/projectStore'
 import { useBudgetStore } from '@/store/budgetStore'
 import { useExpenseStore } from '@/store/expenseStore'
@@ -48,15 +48,18 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     fetchComments(id)
   }, [id, fetchProject, fetchItems, fetchExpenses, fetchRate, fetchComments])
 
-  // TODO-BLK-004: Agregar guard de membresía real cuando se migre a Supabase.
-  // Actualmente con mock data no se puede validar membresía de forma segura.
-  // El fix requiere: query a project_members + redirect si no es miembro ni owner.
-  const userRole = useMemo<UserRole>(() => {
-    if (!user || !id) return 'cliente'
+  // BLK-101: Guard de membresía — redirige silenciosamente si el usuario
+  // no es miembro del proyecto ni su arquitecto dueño.
+  // En producción: reemplazar con query Supabase + RLS policy (ver supabase/rls.sql).
+  const { userRole, hasMembership } = useMemo<{ userRole: UserRole; hasMembership: boolean }>(() => {
+    if (!user || !id) return { userRole: 'cliente', hasMembership: false }
     const membership = mockProjectMembers.find(
       (m) => m.project_id === id && m.user_id === user.id
     )
-    return (membership?.role as UserRole) ?? user.role
+    return {
+      userRole: (membership?.role as UserRole) ?? user.role,
+      hasMembership: !!membership,
+    }
   }, [user, id])
 
   const { totalBudget, totalSpent, globalProgress } = useMemo(() => {
@@ -73,6 +76,11 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
         <Spinner className="w-8 h-8" />
       </div>
     )
+  }
+
+  // BLK-101: Redirect if user is not a member and not the architect owner
+  if (!hasMembership && currentProject.architect_id !== user?.id) {
+    return <Navigate to="/projects" replace />
   }
 
   return (
