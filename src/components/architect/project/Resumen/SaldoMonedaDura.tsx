@@ -42,7 +42,23 @@ export function SaldoMonedaDura() {
 
   const saldoARS = totalBudget - totalSpent
   const tcBlue = latestRate?.rate_blue ?? 1450
-  const saldoUSD = tcBlue > 0 ? saldoARS / tcBlue : 0
+
+  // BLK-102 / CRT-101: Usar amount_usd histórico por gasto en lugar de
+  // dividir el total ARS por el TC actual. Así se respeta el TC del momento
+  // en que se registró cada gasto, sin reescribir la historia.
+  const totalSpentUSD = expenses.reduce((sum, e) => {
+    const usd =
+      e.amount_usd !== undefined && e.amount_usd > 0
+        ? e.amount_usd
+        : e.exchange_rate && e.exchange_rate > 0
+          ? e.amount_ars / e.exchange_rate
+          : tcBlue > 0
+            ? e.amount_ars / tcBlue
+            : 0
+    return sum + usd
+  }, 0)
+  const presupuestoUSD = tcBlue > 0 ? totalBudget / tcBlue : 0
+  const saldoUSD = Math.round((presupuestoUSD - totalSpentUSD) * 100) / 100
 
   const scenarios = [
     { label: '+10%', factor: 1.10 },

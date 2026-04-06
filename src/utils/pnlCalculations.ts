@@ -1,5 +1,6 @@
 import type { BudgetItem, Expense } from '@/lib/supabase'
 import { getPnlStatus, type PnlStatus } from '@/lib/pnlThresholds'
+import type { CurrencyMode } from '@/utils/currency'
 
 // CRT-009: Re-export type for consumers (StatusBadge etc.)
 export type { PnlStatus }
@@ -26,13 +27,33 @@ function worstStatus(statuses: PnlStatus[]): PnlStatus {
 export function calculatePnlRows(
   items: BudgetItem[],
   expenses: Expense[],
-  convert: (ars: number) => number
+  convert: (ars: number) => number,
+  currencyMode?: CurrencyMode
 ): PnlRow[] {
+  // BLK-102: Acumular ARS y USD histórico por separado.
+  // En modo USD se usa usdByItem (TC del momento de cada gasto),
+  // no convert(totalARS) que usaría el TC actual.
   const spentByItem = new Map<string, number>()
+  const usdByItem = new Map<string, number>()
   for (const exp of expenses) {
     if (exp.budget_item_id) {
       spentByItem.set(exp.budget_item_id, (spentByItem.get(exp.budget_item_id) || 0) + exp.amount_ars)
+      const usd =
+        exp.amount_usd !== undefined && exp.amount_usd > 0
+          ? exp.amount_usd
+          : exp.exchange_rate && exp.exchange_rate > 0
+            ? exp.amount_ars / exp.exchange_rate
+            : 0
+      usdByItem.set(exp.budget_item_id, (usdByItem.get(exp.budget_item_id) || 0) + usd)
     }
+  }
+
+  const isUsd = currencyMode === 'USD Blue'
+
+  // Helper: spent en la moneda correcta, usando TC histórico en USD
+  const getSpent = (itemId: string): number => {
+    if (isUsd) return Math.round((usdByItem.get(itemId) || 0) * 100) / 100
+    return spentByItem.get(itemId) || 0
   }
 
   const parents = items.filter((i) => !i.parent_id)
@@ -47,10 +68,10 @@ export function calculatePnlRows(
 
   // Sum spent for parent: include direct expenses on parent + all children
   function getSpentForParent(parentId: string): number {
-    let total = spentByItem.get(parentId) || 0
+    let total = getSpent(parentId)
     const children = childrenMap.get(parentId) || []
     for (const child of children) {
-      total += spentByItem.get(child.id) || 0
+      total += getSpent(child.id)
     }
     return total
   }
@@ -59,7 +80,8 @@ export function calculatePnlRows(
     const children = childrenMap.get(parent.id) || []
     const childRows: PnlRow[] = children.map((child) => {
       const budgeted = convert(child.total_price)
-      const spent = convert(spentByItem.get(child.id) || 0)
+      // BLK-102: usar getSpent() que respeta TC histórico en modo USD
+      const spent = getSpent(child.id)
       const difference = budgeted - spent
       const percentage = budgeted > 0 ? (spent / budgeted) * 100 : spent > 0 ? 100 : 0
       return {
@@ -73,7 +95,7 @@ export function calculatePnlRows(
     })
 
     const budgeted = convert(parent.total_price)
-    const spent = convert(getSpentForParent(parent.id))
+    const spent = getSpentForParent(parent.id)
     const difference = budgeted - spent
     const percentage = budgeted > 0 ? (spent / budgeted) * 100 : spent > 0 ? 100 : 0
 

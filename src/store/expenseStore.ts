@@ -49,9 +49,17 @@ export const useExpenseStore = create<ExpenseState>((set, get) => ({
     if (data.amount_ars < 0) throw new Error('Monto ARS inválido: no puede ser negativo')
     // BLK-003: Lockear TC al momento de creación del gasto
     const currentRate = useCurrencyStore.getState().latestRate
+    const exchangeRate = data.exchange_rate ?? currentRate?.rate_blue ?? null
+    // BLK-102: Calcular amount_usd con TC histórico en el momento de creación,
+    // nunca reconvertir después. Esto preserva el valor en dólares original.
+    const amountUsd =
+      exchangeRate && exchangeRate > 0
+        ? Math.round((data.amount_ars / exchangeRate) * 100) / 100
+        : (data.amount_usd ?? 0)
     const expense: Expense = {
       ...data,
-      exchange_rate: data.exchange_rate ?? currentRate?.rate_blue ?? null,
+      exchange_rate: exchangeRate,
+      amount_usd: amountUsd,
       id: crypto.randomUUID(),
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
